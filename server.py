@@ -7,7 +7,32 @@ from threading import Thread
 import hangman
 
 
+# ==== The struct of the room ====
+class Room(object):
+	names = [];						# List of players (client variable)
+	user = [];						# List of usernames of the players
+	game = "";						# Name of the game to be played
+	password = "";
+
+	def __init__(self, name, username, game, password):
+		super(Room, self).__init__()
+		self.names.append(name);
+		self.user.append(username);
+		self.game = game;
+		self.password = password;
+
+	def add(self, name, username):
+		self.names.append(name);
+		self.user.append(username);
+
+
 # ==== Server for multithreaded (asynchronous) chat application ====
+
+txt = "What game will you play?\n";
+txt += "A) My Last Days with You - Dating Sim\n";
+txt += "B) BFF Test\n";
+txt += "C) Who wants to be a Millionaire\n";
+
 
 
 # ==== Sets up handling for incoming clients ====
@@ -23,6 +48,7 @@ def accept_incoming_connections():
 # ==== Handles a single client connection ====
 def handle_client(client):  # Takes client socket as argument.
 	global room;
+	global hub;
 	host = False;
 
 	# If the username is not within specs/taken at the start
@@ -45,8 +71,9 @@ def handle_client(client):  # Takes client socket as argument.
 	PASSWORD = "123";
 	client.send(bytes("Will you A) join a room or B) create one? (A/B)", "utf8"));
 	msg = client.recv(BUFSIZ);
+	msg = msg.decode("utf8");
 
-	if msg == bytes("A", "utf8") or msg == bytes("a", "utf8"):
+	if msg == "A" or msg == "a":
 		if room is False: #No room exists? Get kicked
 			client.send(bytes("There's no room. GG", "utf8"));
 			client.send(bytes("$$quit$$", "utf8"));
@@ -64,7 +91,11 @@ def handle_client(client):  # Takes client socket as argument.
 			print("%s:%s has disconnected" % addresses[client]);
 			return;
 
-	elif msg == bytes("B", "utf8") or msg == bytes("b", "utf8"):
+		# Join the room
+		hub.add(client, name);
+
+
+	elif msg == "B" or msg == "b":
 		if room: #Room exists? Get kicked
 			client.send(bytes("GG, room is made", "utf8"));
 			client.send(bytes("$$quit$$", "utf8"));
@@ -73,8 +104,22 @@ def handle_client(client):  # Takes client socket as argument.
 			return;
 
 		client.send(bytes("Room is created successfully. Password is " + PASSWORD, "utf8"));
-		room = True;
 		host = True;
+		room = True;
+
+		# Which game to play?
+		while True:
+			client.send(bytes(txt, "utf8"));
+			msg = client.recv(BUFSIZ);
+
+			# Initialize the class
+			msg = msg.decode("utf8");
+			if (msg >= "A" and msg <= "C") or (msg >= "a" and msg <= "c"):
+				hub = Room(client, name, msg, PASSWORD);
+				break;
+
+
+		client.send(bytes("Waiting for other players...", "utf8"));
 
 	else: #Incorrect == Get kicked
 		client.send(bytes("GG. U SUK", "utf8"));
@@ -90,6 +135,7 @@ def handle_client(client):  # Takes client socket as argument.
 
 	msg = "%s has joined the server!" % name;
 	widecast(client, bytes(msg, "utf8"), "");
+
 	while True:
 		msg = client.recv(BUFSIZ);
 
@@ -159,6 +205,12 @@ def handle_client(client):  # Takes client socket as argument.
 				client.send(bytes(" ==== Game ended ====\n", "utf8"));
 
 
+			elif "room" == split_msg[0]:
+				print(hub.game);
+				print(hub.password);
+				for a in hub.user:
+					print(a);
+
 			# ==== Error Message ====
 			else:
 				client.send(bytes("Error: Command not found", "utf8"));
@@ -221,4 +273,5 @@ SERVER.close();
 # https://stackoverflow.com/questions/45370731/what-does-the-parameter-of-1-mean-in-listen1-method-of-socket-module-in-pyth
 # http://net-informations.com/python/iq/global.htm
 # https://www.digitalocean.com/community/tutorials/how-to-write-modules-in-python-3
+# https://www.hackerearth.com/practice/python/object-oriented-programming/classes-and-objects-i/tutorial/
 # ===================================
