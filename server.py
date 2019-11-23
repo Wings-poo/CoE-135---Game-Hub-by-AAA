@@ -1,11 +1,13 @@
 # python3 code
-# CoE 135 - Server
+# CoE 135 - Game Hub Server
 # ===================================
 
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
-import hangman
 import password
+import dating
+# import bfftest
+# import wwtbm
 
 # ==== The struct of the room ====
 class Room(object):
@@ -80,9 +82,9 @@ def handle_client(client):  # Takes client socket as argument.
 	# Ask what to do
 	client.send(bytes("Will you A) join a room or B) create one?", "utf8"))
 	msg = client.recv(BUFSIZ)
-	msg = msg.decode("utf8")
+	msg = msg.decode("utf8").upper()
 
-	if msg == "A" or msg == "a":
+	if msg == "A":
 		if not hotel: #No room exists? Get kicked
 			client.send(bytes("There's no room. GG", "utf8"))
 			client.send(bytes("$$quit$$", "utf8"))
@@ -108,8 +110,13 @@ def handle_client(client):  # Takes client socket as argument.
 			return
 
 
-	elif msg == "B" or msg == "b":
-		pw = password.create()					# Create password
+	elif msg == "B":
+		# Create password
+		pw = password.create()
+			# If room with the password exists already, create new
+		while pw in hotel.keys():
+			pw = password.create()
+
 		client.send(bytes("Room is created successfully. Password is " + pw, "utf8"))
 		host = True
 
@@ -119,8 +126,8 @@ def handle_client(client):  # Takes client socket as argument.
 			msg = client.recv(BUFSIZ)
 
 			# Initialize the class
-			msg = msg.decode("utf8")
-			if (msg >= "A" and msg <= "C") or (msg >= "a" and msg <= "c"):
+			msg = msg.decode("utf8").upper()
+			if (msg >= "A" and msg <= "C"):
 				hotel[pw] = Room(client, name, msg, pw)
 				client.send(bytes("Waiting for other players...", "utf8"))
 				break
@@ -138,23 +145,49 @@ def handle_client(client):  # Takes client socket as argument.
 
 	clients[client] = name
 	username[name] = client
-
 	msg = "%s has joined the server!" % name
 	widecast(client, hotel[pw].names, bytes(msg, "utf8"), "")
+	msg = ""
 
 	while True:
-		msg = client.recv(BUFSIZ)
+		while host == True: # Wait for the start game
+			msg = client.recv(BUFSIZ)
+			msg = msg.decode("utf8")
 
-		# print('Game state:'+str(game_state))
+			if msg == "$$game$$" and hotel[pw].num > 1:
+				hotel[pw].state = True
+				if hotel[pw].game == "A":		# Play the dating sim
+					dating.play(hotel[pw].names)
+				elif hotel[pw].game == "B":		# Play the BFF test
+					print("BFF")
+				else:							# Play the Who wants to be a Millionaire
+					print("Millionaire")
+
+
+
+				hotel[pw].state = False
+				msg = "$$quit$$"
+				break
+
+			elif msg == "$$game$$":
+				client.send(bytes("Not enough players", "utf8"))
+
 
 		# ==== Forced to be in the game ====
 		if hotel[pw].state == True:
-			hangman.hangMan(client, hotel[pw].names)
-			hotel[pw].state = False
-			client.send(bytes(" ==== Game ended ====\n", "utf8"))
+			if hotel[pw].game == "A":		# Play the dating sim
+				dating.play(hotel[pw].names)
+			elif hotel[pw].game == "B":		# Play the BFF test
+				print("BFF")
+			else:							# Play the Who wants to be a Millionaire
+				print("Millionaire")
 
-		# ==== Client leaves ====
-		elif msg == bytes("$$quit$$", "utf8"):
+
+			msg = "$$quit$$"
+
+
+		# ==== Game done ====
+		if msg == "$$quit$$":
 			# Delete the existence of the client
 			client.send(bytes("$$quit$$", "utf8"))
 			client.close()
@@ -167,73 +200,12 @@ def handle_client(client):  # Takes client socket as argument.
 
 			# Inform the server and the other clients who left
 			print("%s:%s has disconnected" % addresses[client])
-			# broadcast(bytes("%s has left the server." % name, "utf8"))
 
-			# if host == True: # Room is now gone
-			# 	del hotel[pw]
+			if host == True: # Room is now gone
+				del hotel[pw]
 
 			break
 
-
-		# ==== Commands ====
-		elif msg.decode("utf8").startswith('$$') and msg.decode("utf8").endswith('$$'):
-			split_msg = msg.decode("utf8")
-			split_msg = split_msg[2:-2]			# Remove the $$
-			split_msg = split_msg.split(',')		# Tokenize
-
-						# ==== Game ====
-			if "game" == split_msg[0]:
-				hangman.game_state = True
-				hotel[pw].state = True
-				hangman.guesses = 0
-
-				hangman.word = hangman.selectWord()
-				hangman.word_list = []
-				for i in range(len(hangman.word)):
-					hangman.word_list += hangman.word[i]
-
-				hangman.blanks = "_ "
-				hangman.blanks_list = []
-				for i in range(len(hangman.word)):
-					hangman.blanks_list.append(hangman.blanks)
-
-				hangman.new_blanks_list = []
-				for i in range(len(hangman.word)):
-					hangman.new_blanks_list.append(hangman.blanks)
-
-				hangman.game_broadcast(bytes("Let's play hangman!\n", "utf8"), hotel[pw].names)
-				hangman.print_scaffold(hangman.guesses, hangman.word, hotel[pw].names)
-				hangman.game_broadcast(bytes("\n", "utf8"), hotel[pw].names)
-				hangman.game_broadcast(bytes("" + ' '.join(hangman.blanks_list), "utf8"), hotel[pw].names)
-				hangman.game_broadcast(bytes("\n", "utf8"), hotel[pw].names)
-				hangman.game_broadcast(bytes("Guess a letter.\n", "utf8"), clients)
-
-				hangman.guess_list = []
-				hangman.hangMan(client, hotel[pw].names)
-				client.send(bytes(" ==== Game ended ====\n", "utf8"))
-
-
-			elif "room" == split_msg[0]:
-				print(hotel[pw].game)
-				print(hotel[pw].password)
-				print("%d player(s)" %hotel[pw].num)
-				for a in hotel[pw].user:
-					print(a)
-
-			# ==== Error Message ====
-			else:
-				client.send(bytes("Error: Command not found", "utf8"))
-
-		else:
-			widecast(client, hotel[pw].names, msg, "%-8s: " %name)
-
-
-
-# ==== Broadcasts a message to all the clients ====
-def broadcast(msg, prefix = ""):  # prefix is for name identification.
-
-    for sock in clients:
-        sock.send(bytes(prefix, "utf8")+msg)
 
 
 
@@ -246,6 +218,7 @@ def widecast(sender, room, msg, prefix = ""):  # prefix is for name identificati
 
 
 
+
 # ==== Main function ====
 username = {}						# Lists of usernames (Checks for duplicates)
 clients = {}						# Clients and their current username
@@ -255,7 +228,7 @@ hotel = {}							# Lists of rooms (key is password)
 # HOST = input('Server IP: ')
 # PORT = int(input('Port number: '))
 HOST = "127.0.0.1"
-PORT = 9999
+PORT = 6969
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
 

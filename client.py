@@ -16,7 +16,7 @@ def receive():
 			msg = client.recv(BUFSIZ).decode("utf8");
 
 			if(msg == "$$quit$$"):
-				client.close();
+				# client.close();
 				break;
 
 			print(msg);
@@ -29,14 +29,8 @@ def send():		# event is passed by binders.
 
 	while True:
 		msg = input();
-
-		if msg == "$$quit$$":
-			client.send(bytes(msg, "utf8"));
-			print('You left the chat');
-			client.close();
-			break;
-
 		client.send(bytes(msg, "utf8"));
+
 
 
 
@@ -44,7 +38,7 @@ def send():		# event is passed by binders.
 # HOST = input('Server IP: ');
 # PORT = int(input('Port number: '));
 HOST = "127.0.0.1";
-PORT = 9999;
+PORT = 6969;
 BUFSIZ = 1024;
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
