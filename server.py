@@ -157,7 +157,7 @@ def handle_client(client):  # Takes client socket as argument.
 			if msg == "$$game$$" and hotel[pw].num > 1:
 				hotel[pw].state = True
 				if hotel[pw].game == "A":		# Play the dating sim
-					dating.play(hotel[pw].names, client)
+					dating.play(hotel[pw], client)
 				elif hotel[pw].game == "B":		# Play the BFF test
 					print("BFF")
 				else:							# Play the Who wants to be a Millionaire
@@ -176,7 +176,7 @@ def handle_client(client):  # Takes client socket as argument.
 		# ==== Forced to be in the game ====
 		if hotel[pw].state == True:
 			if hotel[pw].game == "A":		# Play the dating sim
-				dating.play(hotel[pw].names, client)
+				dating.play(hotel[pw], client)
 			elif hotel[pw].game == "B":		# Play the BFF test
 				print("BFF")
 			else:							# Play the Who wants to be a Millionaire
