@@ -6,6 +6,17 @@ import socket
 import sys
 import re
 from threading import Thread
+import time
+from os import system, name
+
+
+# ==== Clears screen ====
+def clear():
+	if name == 'nt':
+		_ = system('cls')
+	else:
+		_ = system('clear')
+
 
 
 # ==== Handles receiving of messages ====
@@ -13,48 +24,52 @@ def receive():
 
 	while True:
 		try:
-			msg = client.recv(BUFSIZ).decode("utf8");
+			msg = client.recv(BUFSIZ).decode("utf8")
 
-			if(msg == "$$quit$$"):
-				# client.close();
-				break;
+			if msg == "$$quit$$" or msg == '':
+				client.close()
+				break
 
-			print(msg);
+			elif msg == "$$clr$$":
+				clear()
+				continue
+
+			print(msg)
 		except OSError:  # Possibly client has left the chat.
-			break;
+			break
 
 
 # ==== Handles sending of messages ====
 def send():		# event is passed by binders.
 
 	while True:
-		msg = input();
-		client.send(bytes(msg, "utf8"));
+		msg = input()
+		client.send(bytes(msg, "utf8"))
 
 
 
 
 # ==== Main function ====
-# HOST = input('Server IP: ');
-# PORT = int(input('Port number: '));
-HOST = "127.0.0.1";
-PORT = 6969;
-BUFSIZ = 1024;
+# HOST = input('Server IP: ')
+# PORT = int(input('Port number: '))
+HOST = "127.0.0.1"
+PORT = 6969
+BUFSIZ = 1024
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-try: client.connect((HOST, PORT));
+try: client.connect((HOST, PORT))
 except:		#If couldn't connect or invalid HOST/PORT
-	print('Could not connect to %s:%d' % (HOST, PORT) );
-	sys.exit();
+	print('Could not connect to %s:%d' % (HOST, PORT) )
+	sys.exit()
 
-receive_thread = Thread(target = receive);
-send_thread = Thread(target = send);
-# receive_thread.daemon = True;
-send_thread.daemon = True;
-receive_thread.start();
-send_thread.start();
-receive_thread.join();
+receive_thread = Thread(target = receive)
+send_thread = Thread(target = send)
+# receive_thread.daemon = True
+send_thread.daemon = True
+receive_thread.start()
+send_thread.start()
+receive_thread.join()
 
 # ===================================
 # Code and info gotten from these websites:
