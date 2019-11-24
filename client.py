@@ -6,7 +6,6 @@ import socket
 import sys
 import re
 from threading import Thread
-import time
 from os import system, name
 
 

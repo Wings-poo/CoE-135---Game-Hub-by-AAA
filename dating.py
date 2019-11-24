@@ -2,14 +2,17 @@
 # CoE 135 - My Last Days with You - Dating Sim
 # ===================================
 
-import time
+from time import sleep
 
 # ==== Main ====
 def play(room, player):
 	clear(player)
-	time.sleep(0.5)
+	sleep(0.5)
 	player.send((bytes("My Last Days with You - Dating Sim", "utf8")))
-	time.sleep(5)
+	sleep(1)
+
+
+	sleep(1)
 	player.send((bytes("=========== Game End ===========", "utf8")))
 
 
