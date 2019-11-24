@@ -77,4 +77,5 @@ receive_thread.join()
 # https://docs.python.org/3/library/re.html#re.IGNORECASE
 # https://stackoverflow.com/questions/28955005/python-replace-nth-word-in-string
 # https://stackoverflow.com/questions/1635080/terminate-a-multi-thread-python-program
+# https://www.geeksforgeeks.org/clear-screen-python/
 # ===================================

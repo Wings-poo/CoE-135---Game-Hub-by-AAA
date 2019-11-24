@@ -16,24 +16,24 @@ class Room(object):
 		super(Room, self).__init__()
 		# Initialize the variables first
 		self.names = []
-		self.user = []
+		self.user = {}
 		self.game = ""
 		self.password = ""
 		self.num = 0
 		self.state = False				# If playing or not
 
 		self.names.append(name)			# List of players (client variable)
-		self.user.append(username)		# List of usernames of the players
+		self.user[name] = username		# List of usernames of the players
 		self.game = game				# Name of the game to be played
 		self.password = password
 		self.num = 1;					# Number of players in room
 
 	def add(self, name, username):
 		self.names.append(name)
-		self.user.append(username)
+		self.user[name] = username
 		self.num += 1
 
-	def datingsim(self):
+	def datingsim(self, newgame):
 		# Initialize the variables needed for dating sim
 		self.place = []
 		self.taken = []
@@ -44,8 +44,9 @@ class Room(object):
 			self.place.append("")
 			self.taken.append(False)
 
-		for i in self.names:
-			self.score[i] = 0
+		if newgame is True:
+			for i in self.names:
+				self.score[i] = 0
 
 
 

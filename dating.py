@@ -26,17 +26,16 @@ def play(room, player):
 
 
 def day1(room, player):
-	room.datingsim()
-	room.choice = 0
+	room.datingsim(True)
 
 	msg = "\n\nIt was a bright morning today. You're eating breakfast with your friends since childhood."
 	text(player, msg)
 	msg = "You don't know how you guys were able to stick through after all this time."
 	text(player, msg)
-	msg = "We're a weird group, after all."
+	msg = "You're a weird group, after all."
 	text(player, msg)
 
-	for i in room.user:
+	for i in room.user.values():
 		text(player, i)
 
 	msg = "And most importantly, Deredere. The glue of the group.\n"
@@ -99,33 +98,37 @@ def day1(room, player):
 	while room.choice < room.num:
 		i = 0				# Do nothing
 
-	# if room.taken[0] is True:
-	# 	home1(room, player)
-	# elif room.taken[1] is True:
+	sleep(0.5)
+	clear(player)
+	sleep(0.5)
+	if room.taken[0] is True:
+		home1(room, player)
+	# if room.taken[1] is True:
 	# 	park1(room, player)
-	# elif room.taken[2] is True:
+	# if room.taken[2] is True:
 	# 	schl1(room, player)
-	# elif room.taken[3] is True:
+	# if room.taken[3] is True:
 	# 	lib1(room, player)
 
 
 
+def home1(room, player):
+	room.choice = 0
+	name = room.user[room.place[0]]
+
+	msg = "Home. What is home?"
+	text(player, msg)
+
+	if name is room.user[player]:
+		msg = "I don't know..."
+		text(player, msg)
 
 
 
 # ==== Send game text ====
 def text(player, msg):
 	player.send(bytes(msg, "utf8"))
-	sleep(2)
-
-
-
-
-# ==== Broadcasts a message to all players in the room ====
-def gamecast(players, msg):
-
-	for sock in players:
-		sock.send(bytes(msg, "utf8"))
+	sleep(1)
 
 
 
@@ -137,5 +140,5 @@ def clear(player):
 
 # ===================================
 # Code and info gotten from these websites:
-# https://www.geeksforgeeks.org/clear-screen-python/
+# https://stackoverflow.com/questions/7002429/how-can-i-extract-all-values-from-a-dictionary-in-python
 # ===================================
