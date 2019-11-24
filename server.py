@@ -33,6 +33,19 @@ class Room(object):
 		self.user.append(username)
 		self.num += 1
 
+	def datingsim(self):
+		# Initialize the variables needed for dating sim
+		self.place = []
+		self.taken = []
+		self.score = {}
+		self.choice = 0
+
+		for i in range(4):
+			self.place.append("")
+			self.taken.append(False)
+
+		for i in self.names:
+			self.score[i] = 0
 
 
 
@@ -99,11 +112,19 @@ def handle_client(client):  # Takes client socket as argument.
 		if msg in hotel.keys(): # Password exists
 			pw = msg
 
+			if hotel[pw].num == 4: # Room is full
+				client.send(bytes("Sadt. Room is full", "utf8"))
+				client.send(bytes("$$quit$$", "utf8"))
+				client.close()
+				print("%s:%s has disconnected" % addresses[client])
+				return
+
 			# Join the room
 			hotel[pw].add(client, name)
 
+
 		else: #Get kicked
-			client.send(bytes("GG. U SUK", "utf8"))
+			client.send(bytes("GG. No room with that password. Get rekt", "utf8"))
 			client.send(bytes("$$quit$$", "utf8"))
 			client.close()
 			print("%s:%s has disconnected" % addresses[client])
