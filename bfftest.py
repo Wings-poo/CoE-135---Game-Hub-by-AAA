@@ -1,35 +1,58 @@
 import random 
 import threading 
 import time
+from bfftestvar import *
 
-players = ["Aidee","Angie","Amanda"]
-playername = players[random.randint(0, len(players)-1)]
-questions = [
-    "What is the favorite cuisine of " + playername + "?",
-    "How old is " + playername + "?",
-    "What is the middle initial of " + playername,
-    playername + "\'s most recent song addiction",
-    "Number of siblings of " + playername]
+print(rules)
+
+def randp():
+    global played
+    randnum = random.randint(0, numplayers - 1)
+    while (played[randnum] == True):
+        randnum = random.randint(0, numplayers - 1)
+    played[randnum] = True
+    return players[randnum]
 
 def q(): 
-    r1 = random.randint(0, len(questions)-1) 
-    print(questions[r1])
+    global questioned
+    randnum = random.randint(0, qnum - 1)
+    while (questioned[randnum] == True):
+        randnum = random.randint(0, qnum-1)
+    questioned[randnum] = True
+    print(questions[randnum])
 
-def a():
-    ans = input()
+def comp_input(ansA,ansB):
+    if (ansA == ansB):
+        return True
+    """ things to include:
+        double chara
+        swapped chara
+        keyboard mismatch
+        missing chara
+    """
+    return False
 
 def donothing():
     print("idle\n")
 
-for i in range(0,2):
-    q()
-    timer = threading.Timer(10.0, a) 
-    timer.start() 
-    time.sleep(5.0) 
-    
-    """q()
-    time.sleep(10.0)
-    a() 
-    time.sleep(5.0) """
+for i in range(0,numplayers):
+    playername = randp()
+    questions = initq(playername)
+    for j in range(0,5):
+        """q()
+        timer = threading.Timer(10.0, a) 
+        timer.start() 
+        time.sleep(5.0) 
+        
+        """
+        """ wait for ten seconds after last dude has answered; max of thirty seconds"""
+        q()
+        """send"""
+        #time.sleep(10.0)
+        ansA = input()
+        ansB = input()
+        print(comp_input(ansA,ansB))
+        """recv"""
+        #time.sleep(5.0) 
 
 print("Exit\n")   
