@@ -33,20 +33,19 @@ class Room(object):
 		self.user[name] = username
 		self.num += 1
 
-	def datingsim(self, newgame):
+	def datingsim(self):
 		# Initialize the variables needed for dating sim
 		self.place = []
 		self.taken = []
-		self.score = {}
 		self.choice = 0
+		self.score = {}
 
 		for i in range(4):
 			self.place.append("")
 			self.taken.append(False)
 
-		if newgame is True:
-			for i in self.names:
-				self.score[i] = 0
+		for i in self.names:
+			self.score[i] = 0
 
 
 
@@ -122,6 +121,7 @@ def handle_client(client):  # Takes client socket as argument.
 
 			# Join the room
 			hotel[pw].add(client, name)
+			client.send(bytes("You've successfully joined a room", "utf8"))
 
 
 		else: #Get kicked
