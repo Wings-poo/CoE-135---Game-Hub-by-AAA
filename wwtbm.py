@@ -17,7 +17,7 @@ def help_menu():
     print("__________\nHow to play?\n\nWho Wants to Be a Millionaire is a trivia game involving a series of trivia questions.\nWhat you have to do is answer each questions within the  time limit, which varies per round.\nThere is a total of three rounds with five questions per each round.\nYou will have 15 seconds to answer on the first round, 30 seconds on the second and 45 seconds on the third.\nYour score will be equivalent to the cash prize of the highest correct level that you answered.\n\nGOOD LUCK!\n___________\n")
     menu()
 
-def get_ans(delay, cor_0, cor_1, fifty, call_friend, audience):
+def get_ans(delay, cor_0, cor_1, fifty, call_friend, audience, score):
     while(1):
         ans = input("Answer: ")
         if (ans == 'E')|(ans == 'e'):
@@ -26,7 +26,7 @@ def get_ans(delay, cor_0, cor_1, fifty, call_friend, audience):
             print("Correct! You got 1000 php\n")
             return fifty, call_friend, audience
         else:
-            print("Incorrect. Correct answer is" +  cor_0 + "\nGame over! Your total score is 0.\n")
+            print("Incorrect. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(score) +"\n")
             menu()
 
 def lifeline(cor_0, fifty, call_friend, audience):
@@ -57,13 +57,13 @@ def lifeline(cor_0, fifty, call_friend, audience):
         audience = False
         print("Audience votes: \n")
         if(cor_0 == 'A'):
-            print("A: 55%\nB: 5%\nC:20%\nD:20%")
+            print("A: 55%\nB: 5%\nC: 20%\nD: 20%")
         elif(cor_0 == 'B'):
             print("A: 36%\nB: 44%\nC: 17%\nD: 3%")
         elif(cor_0 == 'C'):
-            print("A: 3%\nB:4%\nC: 69%\nD:24%")
+            print("A: 3%\nB: 4%\nC: 69%\nD: 24%")
         else:
-            print("A: 12%\nB:25%\nC: 23%\nD:40%")
+            print("A: 12%\nB: 25%\nC: 23%\nD: 40%")
     else:
         print("Failed to use a lifeline.\n")
     return fifty, call_friend, audience
@@ -78,11 +78,11 @@ def play():
     #initialize levels
     level_1 = ["What is the first letter of the Alphabet?\nA. A\nB. B\nC. C\nD. D\n", "The female deer is known as?\nA. jill\nB. doe\nC. flyer\nD. hen\n", "Who among the following is a national hero of the Philippines?\nA. Marian Rivera\nB. James Reid\nC. Jose Rizal\nD. Sir Briones\n", "What is the currency of the Philippines?\nA. Dollar\nB. Yen\nC. Won\nD. Peso\n", "How many continents are in the world?\nA. 7\nB. 6\nC. 5\nD. 4\n","What is the formula for water?\nA. H3O\nB. H2O\nC. H3O2\nD. H2O2\n","How many sides a pentagon has?\nA. 3\nB. 4\nC. 5\nD. 6\n", "Up above the world so high, like a diamond in the sky. Which poem do the lyrics belong to?\nA. Old Macdonald\nB. Three Little Pigs\nC. Mary Had a Little Lamb\nD. Twinkle Twinkle Little Star\n", "What is the chemical Symbol for Oxygen?\nA. O\nB. C\nC. H\nD. He\n", "What is the largest planet?\nA. Earth\nB. Jupiter\nC. Sun\nD. Mars\n"]
     level_2 = ["Botany is the study of?\nA. Animal\nB. Population\nC. Plants\nD. Human Body\n", "How many elements are in a periodic table?\nA. 115\nB. 116\nC. 117\nD. 118\n", "Who built the pyramids?\nA. Egyptians\nB. Summerians\nC. Greeks\nD. Romans\n", "Who is the first Greek god of love?\nA. Zeus\nB. Aphrodite\nC. Hera\nD. Hermes\n", "How many keys are there on a piano?\nA. 66\nB. 77\nC. 88\nD. 99\n", "Which American singer is known as the King of Pop?\nA. Justin Bieber\nB. Miley Cyrus\nC. Ed Sheeran\nD. Michael Jackson\n", "Komodo dragon belongs to which animal family?\nA. Lizard\nB. Cats\nC. Dogs\nD. Bears\n", "In the bible, after the flood, what sign did God give that He would not destroy the earth with a flood again?\nA. Rain\nB. Rainbow\nC. Clouds\nD. Lightning", "In which game the word \"love\" is used?\nA. Basketball\nB. Soccer\nC. Tennis\nD. Volleyball\n", "In the movie \"Home Alone\", who was the child left at home in Christmas Holidays?\nA. John\nB. Peter\nC. James\nD. Kevin\n"]
-    level_3 = ["\"You can't see me\" is a catchphrase of which wrestler?\nA.John Cena\nB. Dwayne Johnson\nC. Hulk Hogan\nD. Dennis Rodman\n", "A golf ball is made up of?\nA. Plastic\nB. Rubber\nC. Metal\nD. Clay\n", "Who is the shortest NBA player with a height of 5 ft and 3 inches?\nA. Spud Webb\nB. Kay Felder\nC. Muggsy Bogues\nD. Isaiah Thomas\n", "Rain contains which vitamin?\nA. Vitamin B9\nB. Vitamin B10\nC. Vitamin B11\nD. Vitamin B12", "What type of blood group is a universal donor?\nA. O\nB. A\nC. B\nD. AB\n", "At the birth, how many bones do a baby have?\nA. 250\nB. 300\nC. 350\nD. 400\n", "Who sang the song Waka Waka?\nA. Beyonce\nB. Lady Gaga\nC. Shakira\nD. Taylor Swift\n", "The area of biology devoted to the study of fungi is known as?\nA. Microbiology\nB. Anatomy\nC. Phycology\nD. Mycology\n", "Which of these organs can grow back if some of it is removed?\nA. Liver\nB. Stomach\nC. Appendix\nD. Kidney", "Plants receive their nutrients mainly from\nA. Sun\nB. Soil\nC. Water\nD. Carbon Dioxide\n"]
-    level_4 = ["What is the symbol for the element silver?\nA. Si\nB. Au\nC. Ag\nD. He\n", "What is the hottest planet of the solar system?\nA. Mercury\nB. Earth\nC. Mars\nD. Venus\n", "What is the age of the sun?\nA. 5 Billion Years\nB. 6 Billion years\nC. 7 Billion years\nD. 8 Billion years\n", "What is the symbol for the element gold?\nA. Si\nB. Au\nC. Ag\nD. He\n", "Which element can burn on the surface of water?\nA. Hydrogen\nB. Oxygen\nC. Potassium\nD. Carbon\n", "What is the lightest element?\nA. Oxygen\nB. Silicon\nC. Carbon\nD. Hydrogen\n", "What does the F stand for in FBI?\nA. Federal\nB. Federation\nC. Facility\nD. Factfinder\n", "After leaving Bethlehem, to which country did Joseph, Mary, and Jesus travel?\nA. Israel\nB. Egypt\nC. Turkey\nD. Qatar\n", "Which country does Santa Claus (Nicholas) originally belong to?\nA. Israel\nB. Egypt\nC. Turkey\nD. Qatar\n", "What is the highest score possible in 10 pin bowling?\nA. 150\nB. 200\nC. 250\nD. 300"]
-    level_5 = ["Who discovered human cell?\nA. Robert Hooke\nB. Joseph Lister\nC. Charles Darwin\nD. Michael Harrison\n", "Who invented calculus?\nA. Pythagoras\nB. Sir Isaac Newton\nC. Archimedes\nD. James Waddell Alexander II\n", "Who is known as the father of mathematics?\nA. Pythagoras\nB. Sir Isaac Newton\nC. Archimedes\nD. James Waddell Alexander II\n", "Who invented the radioactive element called radium?\nA. Albert Einstein\nB. Galileo Galilei\nC. Alexander Fleming\nD. Marie Sklodowska-Curie", "30 is the atomic number of which element?\nA. Zinc\nB. Gallium\nC. Germanium\nD. Arsenic\n", "In 2017, Bill Gates held which position in the list of world's richest people?\nA. First position\nB. Second position\nC. Third position\nD. Fourth position\n", "Flutter is a group name of which beautiful creature?\nA. Fly\nB. Bees\nC. Butterfly\nD. Dragonfly\n", "Which sea is an extension of the Indian Ocean?\nA. Deep Sea\nB. Bering Sea\nC. Bali Sea\nD. Red Sea\n", "Who was the first person to invent a thermometer?\nA. Galileo Galilei\nB. Robert Hooke\nC. Aristotle\nD. Thomas Edison\n", "What is the middle layer of the Earth?\nA. Crust\nB. Mantle\nC. Inner Core\nD. Outer Core\n"]
+    level_3 = ["\"You can't see me\" is a catchphrase of which wrestler?\nA.John Cena\nB. Dwayne Johnson\nC. Hulk Hogan\nD. Dennis Rodman\n", "A golf ball is made up of?\nA. Plastic\nB. Rubber\nC. Metal\nD. Clay\n", "Who is the shortest NBA player with a height of 5 ft and 3 inches?\nA. Spud Webb\nB. Kay Felder\nC. Muggsy Bogues\nD. Isaiah Thomas\n", "Rain contains which vitamin?\nA. Vitamin B9\nB. Vitamin B10\nC. Vitamin B11\nD. Vitamin B12\n", "What type of blood group is a universal donor?\nA. O\nB. A\nC. B\nD. AB\n", "At the birth, how many bones do a baby have?\nA. 250\nB. 300\nC. 350\nD. 400\n", "Who sang the song Waka Waka?\nA. Beyonce\nB. Lady Gaga\nC. Shakira\nD. Taylor Swift\n", "The area of biology devoted to the study of fungi is known as?\nA. Microbiology\nB. Anatomy\nC. Phycology\nD. Mycology\n", "Which of these organs can grow back if some of it is removed?\nA. Liver\nB. Stomach\nC. Appendix\nD. Kidney\n", "Plants receive their nutrients mainly from\nA. Sun\nB. Soil\nC. Water\nD. Carbon Dioxide\n"]
+    level_4 = ["What is the symbol for the element silver?\nA. Si\nB. Au\nC. Ag\nD. He\n", "What is the hottest planet of the solar system?\nA. Mercury\nB. Earth\nC. Mars\nD. Venus\n", "What is the age of the sun?\nA. 5 Billion Years\nB. 6 Billion years\nC. 7 Billion years\nD. 8 Billion years\n", "What is the symbol for the element gold?\nA. Si\nB. Au\nC. Ag\nD. He\n", "Which element can burn on the surface of water?\nA. Hydrogen\nB. Oxygen\nC. Potassium\nD. Carbon\n", "What is the lightest element?\nA. Oxygen\nB. Silicon\nC. Carbon\nD. Hydrogen\n", "What does the F stand for in FBI?\nA. Federal\nB. Federation\nC. Facility\nD. Factfinder\n", "After leaving Bethlehem, to which country did Joseph, Mary, and Jesus travel?\nA. Israel\nB. Egypt\nC. Turkey\nD. Qatar\n", "Which country does Santa Claus (Nicholas) originally belong to?\nA. Israel\nB. Egypt\nC. Turkey\nD. Qatar\n", "What is the highest score possible in 10 pin bowling?\nA. 150\nB. 200\nC. 250\nD. 300\n"]
+    level_5 = ["Who discovered human cell?\nA. Robert Hooke\nB. Joseph Lister\nC. Charles Darwin\nD. Michael Harrison\n", "Who invented calculus?\nA. Pythagoras\nB. Sir Isaac Newton\nC. Archimedes\nD. James Waddell Alexander II\n", "Who is known as the father of mathematics?\nA. Pythagoras\nB. Sir Isaac Newton\nC. Archimedes\nD. James Waddell Alexander II\n", "Who invented the radioactive element called radium?\nA. Albert Einstein\nB. Galileo Galilei\nC. Alexander Fleming\nD. Marie Sklodowska-Curie\n", "30 is the atomic number of which element?\nA. Zinc\nB. Gallium\nC. Germanium\nD. Arsenic\n", "In 2017, Bill Gates held which position in the list of world's richest people?\nA. First position\nB. Second position\nC. Third position\nD. Fourth position\n", "Flutter is a group name of which beautiful creature?\nA. Fly\nB. Bees\nC. Butterfly\nD. Dragonfly\n", "Which sea is an extension of the Indian Ocean?\nA. Deep Sea\nB. Bering Sea\nC. Bali Sea\nD. Red Sea\n", "Who was the first person to invent a thermometer?\nA. Galileo Galilei\nB. Robert Hooke\nC. Aristotle\nD. Thomas Edison\n", "What is the middle layer of the Earth?\nA. Crust\nB. Mantle\nC. Inner Core\nD. Outer Core\n"]
     level_6 = ["Which city is the capital of Australia?\nA. Sydney\nB. Liverpool\nC. Canberra\nD. Melbourne\n", "Which is the capital of Quezon Province?\nA. Lucban\nB. Tayabas\nC. Infanta\nD. Lucena\n", "The Bataan Death March took place in what year?\nA. 1942\nB. 1947\nC. 1952\nD. 1957\n", "Who was the first Filipina to win the Miss International beauty title in 1964?\nA. Margarita Moran\nB. Gemma Cruz\nC. Gloria Diaz\nD. Tetchie Agbayani\n", "Gloria Diaz won the Miss Universe contest in what year?\nA. 1963\nB. 1966\nC. 1969\nD. 1972\n", "Which country is the largest producer of coffee?\nA. Philippines\nB. Congo\nC. Indonesia\nD. Brazil\n", "What is the name of the Pharaoh for whom the great pyramid of Giza was built?\nA. Khufu\nB. Narmer\nC. Nectanebo II\nD. Cleopatra\n", "Who made the first telescopic observations of the planet Mars?\nA. Pythagoras\nB. Galileo Galilei\nC. Robert Hooke\nD. Aristotle\n", "Who wrote the famous book, \"Snow White and the Seven Dwarfs\"?\nA. Grimm Brothers\nB. Hans Christian Andersen\nC. Wanda Gag\nD. Sir Briones\n", "Which year the APA style of citation originated?\nA. 1926\nB. 1927\nC. 1928\nD. 1929\n"]
-    level_7 = ["Complete The Fibonacci Sequences 0, 1, 1, 2, 3, 5, 8, 13, 21, 34\nA. 55\nB. 56\nC. 57\nD. 58\n", "What Mathematical Symbol was determined by Whiz Ferdinand Von Lindemann in 1882?\nA. e\nB. Pi\nC. Theta\nD. alpha\n", "How many sides does an Icosahedron has?\nA. 10\nB. 15\nC. 20\nD. 30\n","In which civilization dot patterns were first employed to represent numbers?\nA. Indian\nB. Egyptians\nC. Sumerians\nD. Chinese\n", "In which ancient civilization introduced the representation of digits into words?\nA. Indian\nB. Egyptians\nC. Sumerians\nD. Chinese\n", "Which is the most ancient?\nA. Fibonacci\nB. Figurate\nC. Kaprekar\nD. Mersenne\n", "Who coined the word \"biochemistry\"?\nA. Alexander Fleming\nB. Sir Briones\nC. Wilhelm Kuhne\nD. Robert Hooke\n", "Which river serves as the international border between America and Canada?\nA. Nile River\nB. Mackenzie River\nC. Yukon River\nD. Niagara Falls\n", "How many teeth are there in an adult's mouth?\nA. 32\nB. 30\nC. 28\nD. 26\n", "In which city of Spain did Columbus die?\nA. Madrid\nB. Valladolid\nC. Valencia\nD. Palma"]
+    level_7 = ["Complete The Fibonacci Sequences 0, 1, 1, 2, 3, 5, 8, 13, 21, 34\nA. 55\nB. 56\nC. 57\nD. 58\n", "What Mathematical Symbol was determined by Whiz Ferdinand Von Lindemann in 1882?\nA. e\nB. Pi\nC. Theta\nD. alpha\n", "How many sides does an Icosahedron has?\nA. 10\nB. 15\nC. 20\nD. 30\n","In which civilization dot patterns were first employed to represent numbers?\nA. Indian\nB. Egyptians\nC. Sumerians\nD. Chinese\n", "In which ancient civilization introduced the representation of digits into words?\nA. Indian\nB. Egyptians\nC. Sumerians\nD. Chinese\n", "Which is the most ancient?\nA. Fibonacci\nB. Figurate\nC. Kaprekar\nD. Mersenne\n", "Who coined the word \"biochemistry\"?\nA. Alexander Fleming\nB. Sir Briones\nC. Wilhelm Kuhne\nD. Robert Hooke\n", "Which river serves as the international border between America and Canada?\nA. Nile River\nB. Mackenzie River\nC. Yukon River\nD. Niagara Falls\n", "How many teeth are there in an adult's mouth?\nA. 32\nB. 30\nC. 28\nD. 26\n", "In which city of Spain did Columbus die?\nA. Madrid\nB. Valladolid\nC. Valencia\nD. Palma\n"]
     level_8 = ["Which ocean bounds with South America from the west?\nA. Indian Ocean\nB. Arctic Ocean\nC. Pacific Ocean\nD. Atlantic Ocean\n", "What is the sea that has the Earth's lowest elevation?\nA. Red Sea\nB. Baffin Sea\nC. Queen Victoria Sea\nD. Salt Sea\n", "In 2016, two countries confirmed signing the Paris Climate agreement. One of them was the USA. Name the other country?\nA. China\nB. Russia\nC. France\nD. Singapore\n", "What's the other name of Mississippi Rivers?\nA. Mother of the rivers\nB.  Father of the rivers\nC. Queen of the Rivers\nD. King of the Rivers\n", "Ottawa is the capital of which country?\nA. Austria\nB. Australia\nC. Canada\nD. Singapore\n", "\"To die, to sleep - To sleep, perchance to dream - ay, there's the rub, For in this sleep of death what dreams may come..\" The dialogue belongs to which play?\nA. Romeo and Juliet\nB. Julius Caesar\nC. Macbeth\nD. Hamlet\n", "How many countries are there in Europe?\nA. 50\nB. 55\nC. 60\nD. 65\n", "Which Italian city is known as the City of Water?\nA. Verona\nB. Venice\nC. Messina\nD. Bologna\n", "Bolognese is the national dish of which country?\nA. France\nB. Germany\nC. Italy\nD. Philippines\n", "Who is the founder of the formula of Coca-Cola?\nA. John Richard\nB. John Peppermint\nC. John Permington\nD. John Permberton\n"]
     level_9 = ["A snail can sleep for how many years?\nA. 3 years\nB. 4 years\nC. 5 years\nD. 6 years\n", "How many heart chambers a cockroach has?\nA. 10\nB. 12\nC. 14\nD. 16\n", "Which animal has the highest blood pressure?\nA. Elephant\nB. Turtles\nC. Giraffe\nD. Lion\n", "A mandrill is what type of creature?\nA. Dog\nB. Cat\nC. Weasel\nD. Monkey\n", "Name the oldest giant panda, which died in 2016 at the age of 114?\nA. Jia Jia\nB. Chi Chi\nC. Quin\nD. Xiao Lao\n", "Out of twelve, how many dogs survive in the Titanic disaster?\nA. 2\nB. 3\nC. 4\nD. 5\n", "Which bird is a symbol of good luck?\nA. Dove\nB. Eagle\nC. Storks\nD. Flamingo\n", "Hominoidea is a scientific name of which animal?\nA. Turtle\nB. Penguin\nC. Tiger\nD. Ape\n", "The blind Dolphins are found in which river?\nA. Indus River\nB. Nile River\nC. Mississippi River\nD. Yukon River\n", "The fingerprints of which animal extremely resembles the humans?\nA. Tiger\nB. Koala\nC. Ape\nD. Monkey\n"]
     level_10 = ["What is the biggest island of the world?\nA. Antartica\nB. Iceland\nC. Greenland\nD. Japan\n", "How many states are there in the United States of America?\nA. 35\nB. 40\nC. 45\nD. 50\n", "Which is the largest lake of the world?\nA. Caspian Sea\nB.  Lake Baikal\nC. Taal Lake\nD. Don Juan Pond\n", "What is another name of Counter Strike?\nA. Death Battle\nB. Half-Life\nC. Counter Punch\nD. Free Fire\n", "How many maximum controllers are supported by PS3 System?\nA. 5\nB. 6\nC. 7\nD. 8\n", "Which PC game was delayed in the release because of a hidden picture of a developer's ass?\nA.  Counter Strike\nB. DOTA\nC. Halo\nD. Halo 2\n", "What is the name of the creator of PS4?\nA. Mark Cerny\nB. Minh Le\nC. Steve Feak\nD. Sir Briones\n", "Where is the Mountain Thor situated?\nA. USA\nB. Canada\nC. Mexico\nD. Austria\n", "Which is the third largest continent in the world?\nA. Europe\nB. Africa\nC. North America\nD. South America\n", "How much area of Egypt is acquired by the River Nile?\nA. 10%\nB. 15%\nC. 20%\nD. 22%\n"]
@@ -95,6 +95,64 @@ def play():
     #round 1
     r = random.randint(0,9)
     print("Level 1\nPrize: 1000 php\n" + level_1[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience)
+    fifty, call_friend, audience = get_ans(15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 0)
+
+    r = random.randint(0,9)
+    print("Level 2\nPrize: 2000 php\n" + level_2[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 1000)
+
+    r = random.randint(0,9)
+    print("Level 3\nPrize: 3000 php\n" + level_3[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 2000)
+
+    r = random.randint(0,9)
+    print("Level 4\nPrize: 5000 php\n" + level_4[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 3000)
+
+    r = random.randint(0,9)
+    print("Level 5\nPrize: 10000 php\n" + level_5[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 5000)
+
+    #round 2
+    r = random.randint(0,9)
+    print("Level 6\nPrize: 20000 php\n" + level_6[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 10000)
+
+    r = random.randint(0,9)
+    print("Level 7\nPrize: 30000 php\n" + level_7[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 20000)
+
+    r = random.randint(0,9)
+    print("Level 8\nPrize: 40000 php\n" + level_8[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 30000)
+
+    r = random.randint(0,9)
+    print("Level 9\nPrize: 50000 php\n" + level_9[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 40000)
+
+    r = random.randint(0,9)
+    print("Level 10\nPrize: 100000 php\n" + level_10[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 50000)
+
+    #round 3
+    r = random.randint(0,9)
+    print("Level 11\nPrize: 200000 php\n" + level_11[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 100000)
+
+    r = random.randint(0,9)
+    print("Level 12\nPrize: 300000 php\n" + level_12[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 200000)
+
+    r = random.randint(0,9)
+    print("Level 13\nPrize: 400000 php\n" + level_13[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 300000)
+
+    r = random.randint(0,9)
+    print("Level 14\nPrize: 500000 php\n" + level_14[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 400000)
+
+    r = random.randint(0,9)
+    print("Level 15\nPrize: 1000000 php\n" + level_15[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 500000)
 
 menu()
