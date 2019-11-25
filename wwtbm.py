@@ -2,73 +2,87 @@ import random
 import sys
 import time
 import threading
+import signal
+import os
 
-def menu():
-    print("WHO WANTS TO BE A MILLIONAIRE?\nPress spacebar to start\nPress ? for help\nPress other keys to exit\n")
-    menu_press = input()
+def menu(player):
+    clear(player)
+    player.send((bytes("WHO WANTS TO BE A MILLIONAIRE?\nPress spacebar to start\nPress ? for help\nPress other keys to exit\n", "utf8")))
+    menu_press = player.recv(BUFSIZ).decode("utf8"))
     if menu_press == '?':
-        help_menu()
+        help_menu(player)
     elif menu_press == ' ':
-        play()
+        play(player)
     else:
         sys.exit()
 
-def help_menu():
-    print("__________\nHow to play?\n\nWho Wants to Be a Millionaire is a trivia game involving a series of trivia questions.\nWhat you have to do is answer each questions within the  time limit, which varies per round.\nThere is a total of three rounds with five questions per each round.\nYou will have 15 seconds to answer on the first round, 30 seconds on the second and 45 seconds on the third.\nYour score will be equivalent to the cash prize of the highest correct level that you answered.\n\nGOOD LUCK!\n___________\n")
+def help_menu(player):jjj
+    text = "__________\nHow to play?\n\nWho Wants to Be a Millionaire is a trivia game involving a series of trivia questions.\nWhat you have to do is answer each questions within the  time limit, which varies per round.\nThere is a total of three rounds with five questions per each round.\nYou will have 15 seconds to answer on the first round, 30 seconds on the second and 45 seconds on the third.\nYour score will be equivalent to the cash prize of the highest correct level that you answered.\n\nGOOD LUCK!\n___________\n"
+    player.send((bytes(text, "utf8")))
     menu()
 
-def get_ans(delay, cor_0, cor_1, fifty, call_friend, audience, score):
+def get_ans(player, delay, cor_0, cor_1, fifty, call_friend, audience, score):
     while(1):
-        ans = input("Answer: ")
+        player.send((bytes("Answer: ", "utf8")))
+        a = time.time()
+        ans = player.recv(BUFSIZ).decode("utf8")
+        b = time.time()
+        c = int(b - a)
+        if c > delay:
+            text = "Time's up. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(score) +"\n"
+            player.send((bytes(text, "utf8")))
+            menu()
         if (ans == 'E')|(ans == 'e'):
             fifty, call_friend, audience = lifeline(cor_0, fifty, call_friend, audience)
         elif(ans == cor_0) | (ans == cor_1):
-            print("Correct! You got 1000 php\n")
+            text = "Correct! You got 1000 php\n"
+            player.send((bytes(text, "utf8")))
             return fifty, call_friend, audience
         else:
-            print("Incorrect. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(score) +"\n")
+            text = "Incorrect. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(score) +"\n"
+            player.send((bytes(text, "utf8")))
             menu()
 
-def lifeline(cor_0, fifty, call_friend, audience):
+def lifeline(player, cor_0, fifty, call_friend, audience):
     choice = ["A", "B", "C", "D"]
-    print("Choose lifeline to use:")
+    text(player,"Choose lifeline to use:")
     if(fifty):
-        print("Press 1 if \"50-50\". Reduce the choices into two.")
+        text(player,"Press 1 if \"50-50\". Reduce the choices into two.")
     if(call_friend):
-        print("Press 2 to call a friend.")
+        text(player,"Press 2 to call a friend.")
     if(audience):
-        print("Press 3 to ask the audience.")
+        text(player,"Press 3 to ask the audience.")
 
-    life_used = input()
+    life_used = player.recv(BUFSIZ).decode("utf8")
     if(life_used == '1') & (fifty):
         fifty = False
         buf = cor_0
         while buf == cor_0:
             buf = choice[random.randint(0, 3)]
-        print("Result of 50-50: ")
+        text(player,"Result of 50-50: ")
         if(cor_0 < buf):
-            print(cor_0 + " or " + buf)
+            text(player,cor_0 + " or " + buf)
         else:
-            print(buf + " or " + cor_0)
+            text(player,buf + " or " + cor_0)
     elif(life_used == '2') & (call_friend):
         call_friend = False
-        print("Friend: Just pick " + cor_0)
+        text(player,"Friend: Just pick " + cor_0)
     elif(life_used == '3') & (audience):
         audience = False
-        print("Audience votes: \n")
+        text(player,"Audience votes: \n")
         if(cor_0 == 'A'):
-            print("A: 55%\nB: 5%\nC: 20%\nD: 20%")
+            text(player,"A: 55%\nB: 5%\nC: 20%\nD: 20%")
         elif(cor_0 == 'B'):
-            print("A: 36%\nB: 44%\nC: 17%\nD: 3%")
+            text(player,"A: 36%\nB: 44%\nC: 17%\nD: 3%")
         elif(cor_0 == 'C'):
-            print("A: 3%\nB: 4%\nC: 69%\nD: 24%")
+            text(player,"A: 3%\nB: 4%\nC: 69%\nD: 24%")
         else:
-            print("A: 12%\nB: 25%\nC: 23%\nD: 40%")
+            text(player,"A: 12%\nB: 25%\nC: 23%\nD: 40%")
     else:
-        print("Failed to use a lifeline.\n")
+        text(player,"Failed to use a lifeline.\n")
     return fifty, call_friend, audience
 
-def play():
+def play(player):
     choice = ["A", "B", "C", "D"]
     choice_small = ["a", "b", "c", "d"]
     fifty = True
@@ -94,65 +108,85 @@ def play():
 
     #round 1
     r = random.randint(0,9)
-    print("Level 1\nPrize: 1000 php\n" + level_1[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 0)
+    text(player,"Level 1\nPrize: 1000 php\n" + level_1[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 0)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 2\nPrize: 2000 php\n" + level_2[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 1000)
+    text(player,"Level 2\nPrize: 2000 php\n" + level_2[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 1000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 3\nPrize: 3000 php\n" + level_3[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 2000)
+    text(player,"Level 3\nPrize: 3000 php\n" + level_3[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 2000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 4\nPrize: 5000 php\n" + level_4[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 3000)
+    text(player,"Level 4\nPrize: 5000 php\n" + level_4[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 3000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 5\nPrize: 10000 php\n" + level_5[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 5000)
+    text(player,"Level 5\nPrize: 10000 php\n" + level_5[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 5000)
+    clear(player)
 
     #round 2
     r = random.randint(0,9)
-    print("Level 6\nPrize: 20000 php\n" + level_6[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 10000)
+    text(player,"Level 6\nPrize: 20000 php\n" + level_6[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 10000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 7\nPrize: 30000 php\n" + level_7[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 20000)
+    text(player,"Level 7\nPrize: 30000 php\n" + level_7[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 20000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 8\nPrize: 40000 php\n" + level_8[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 30000)
+    text(player,"Level 8\nPrize: 40000 php\n" + level_8[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 30000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 9\nPrize: 50000 php\n" + level_9[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 40000)
+    text(player,"Level 9\nPrize: 50000 php\n" + level_9[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 40000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 10\nPrize: 100000 php\n" + level_10[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 50000)
+    text(player,"Level 10\nPrize: 100000 php\n" + level_10[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 50000)
+    clear(player)
 
     #round 3
     r = random.randint(0,9)
-    print("Level 11\nPrize: 200000 php\n" + level_11[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 100000)
+    text(player,"Level 11\nPrize: 200000 php\n" + level_11[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 100000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 12\nPrize: 300000 php\n" + level_12[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 200000)
+    text(player,"Level 12\nPrize: 300000 php\n" + level_12[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 200000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 13\nPrize: 400000 php\n" + level_13[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 300000)
+    text(player,"Level 13\nPrize: 400000 php\n" + level_13[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 300000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 14\nPrize: 500000 php\n" + level_14[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 400000)
+    text(player,"Level 14\nPrize: 500000 php\n" + level_14[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 400000)
+    clear(player)
 
     r = random.randint(0,9)
-    print("Level 15\nPrize: 1000000 php\n" + level_15[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 500000)
+    text(player,"Level 15\nPrize: 1000000 php\n" + level_15[r] + "E. USE LIFELINE\n")
+    fifty, call_friend, audience = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 500000)
+    clear(player)
 
-menu()
+def clear(player):
+    player.send((bytes("$$clr$$", "utf8")))
+	sleep(0.5)
+
+def text(player, msg):
+    player.send((bytes(msg, "utf8")))
