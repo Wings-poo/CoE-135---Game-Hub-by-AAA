@@ -1,8 +1,8 @@
 rules = "Welcome to The BFF Test. How to play:\n"
 rules += "    1. Chat with normal text\n"
 rules += "    2. Commands are sent with an opening and closing \'$$\'. The available commands are:\n"
-rules += "       a. answer <answer> - to give an answer, duh\n"
-rules += "       b. kick <username> - kick ya friend. byez\n"
+rules += "       a. ans,<answer> - to give an answer, duh\n"
+rules += "       b. kick,<username> - kick ya friend. byez\n"
 rules += "       c. quit - feel free to walkout beshie\n"
 rules += "    3. Have fun!\n"
 
