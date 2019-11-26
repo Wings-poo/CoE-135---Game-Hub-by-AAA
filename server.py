@@ -7,7 +7,7 @@ from threading import Thread
 import password
 import dating
 # import bfftest
-# import wwtbm
+import wwtbm
 
 # ==== The struct of the room ====
 class Room(object):
@@ -183,7 +183,7 @@ def handle_client(client):  # Takes client socket as argument.
 				elif hotel[pw].game == "B":		# Play the BFF test
 					print("BFF")
 				else:							# Play the Who wants to be a Millionaire
-					print("Millionaire")
+					wwtbm.menu(client)
 
 
 
@@ -202,7 +202,7 @@ def handle_client(client):  # Takes client socket as argument.
 			elif hotel[pw].game == "B":		# Play the BFF test
 				print("BFF")
 			else:							# Play the Who wants to be a Millionaire
-				print("Millionaire")
+				wwtbm.menu(client)
 
 
 			msg = "$$quit$$"
