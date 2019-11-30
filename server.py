@@ -149,11 +149,14 @@ def handle_client(client):  # Takes client socket as argument.
 
 			# Initialize the class
 			msg = msg.decode("utf8").upper()
-			if (msg >= "A" and msg <= "C"):
+			if (msg >= "A" and msg <= "B"):
 				hotel[pw] = Room(client, name, msg, pw)
 				client.send(bytes("Waiting for other players...", "utf8"))
 				break
-
+			elif (msg == "C"):
+				hotel[pw] = Room(client, name, msg, pw)
+				client.send(bytes("Type $$game$$ to start", "utf8"))
+				break
 
 
 	else: #Incorrect == Get kicked
@@ -182,15 +185,17 @@ def handle_client(client):  # Takes client socket as argument.
 					dating.play(hotel[pw], client)
 				elif hotel[pw].game == "B":		# Play the BFF test
 					print("BFF")
-				else:							# Play the Who wants to be a Millionaire
-					wwtbm.menu(client)
-
 
 
 				hotel[pw].state = False
 				msg = "$$quit$$"
 				break
-
+			elif msg == "$$game$$" and hotel[pw].num == 1 and hotel[pw].game == "C": # Play the Who wants to be a Millionaire
+				hotel[pw].state = True
+				wwtbm.menu(client)
+				hotel[pw].state = False
+				msg = "$$quit$$"
+				break
 			elif msg == "$$game$$":
 				client.send(bytes("Not enough players", "utf8"))
 
@@ -264,6 +269,7 @@ if __name__ == "__main__":
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
 SERVER.close()
+
 
 # ===================================
 # Code and info gotten from these websites:
