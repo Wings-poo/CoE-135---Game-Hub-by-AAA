@@ -14,9 +14,9 @@ def menu(player):
     elif menu_press == ' ':
         play(player)
     else:
-        sys.exit()
+        return
 
-def help_menu(player):jjj
+def help_menu(player):
     text = "__________\nHow to play?\n\nWho Wants to Be a Millionaire is a trivia game involving a series of trivia questions.\nWhat you have to do is answer each questions within the  time limit, which varies per round.\nThere is a total of three rounds with five questions per each round.\nYou will have 15 seconds to answer on the first round, 30 seconds on the second and 45 seconds on the third.\nYour score will be equivalent to the cash prize of the highest correct level that you answered.\n\nGOOD LUCK!\n___________\n"
     player.send((bytes(text, "utf8")))
     menu()
