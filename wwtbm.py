@@ -6,22 +6,30 @@ import signal
 import os
 
 def menu(player):
-    clear(player)
-    player.send((bytes("WHO WANTS TO BE A MILLIONAIRE?\nPress spacebar to start\nPress ? for help\nPress other keys to exit\n", "utf8")))
-    menu_press = player.recv(BUFSIZ).decode("utf8"))
-    if menu_press == '?':
-        help_menu(player)
-    elif menu_press == ' ':
-        play(player)
-    else:
-        return
+    while True:
+        clear(player)
+        player.send((bytes("WHO WANTS TO BE A MILLIONAIRE?\nPress spacebar to start\nPress ? for help\nPress other keys to exit\n", "utf8")))
+        BUFSIZ = 1024;
+        menu_press = player.recv(BUFSIZ).decode("utf8")
+        if menu_press == '?':
+            help_menu(player)
+        elif menu_press == ' ':
+            play(player)
+        else:
+            return
 
 def help_menu(player):
+    BUFSIZ = 1024
+    clear(player)
     text = "__________\nHow to play?\n\nWho Wants to Be a Millionaire is a trivia game involving a series of trivia questions.\nWhat you have to do is answer each questions within the  time limit, which varies per round.\nThere is a total of three rounds with five questions per each round.\nYou will have 15 seconds to answer on the first round, 30 seconds on the second and 45 seconds on the third.\nYour score will be equivalent to the cash prize of the highest correct level that you answered.\n\nGOOD LUCK!\n___________\n"
     player.send((bytes(text, "utf8")))
-    menu()
+    player.send((bytes("Press any key to continue", "utf8")))
+    player.recv(BUFSIZ).decode("utf8")
+    return
 
 def get_ans(player, delay, cor_0, cor_1, fifty, call_friend, audience, score):
+    BUFSIZ = 1024
+    level_score = [0, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 40000, 50000, 100000, 200000, 300000, 400000, 500000, 1000000]
     while(1):
         player.send((bytes("Answer: ", "utf8")))
         a = time.time()
@@ -29,21 +37,27 @@ def get_ans(player, delay, cor_0, cor_1, fifty, call_friend, audience, score):
         b = time.time()
         c = int(b - a)
         if c > delay:
-            text = "Time's up. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(score) +"\n"
+            text = "Time's up. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(level_score[score - 1]) +"\n"
             player.send((bytes(text, "utf8")))
-            menu()
+            time.sleep(3)
+            score = -1
+            return fifty, call_friend, audience, score
         if (ans == 'E')|(ans == 'e'):
-            fifty, call_friend, audience = lifeline(cor_0, fifty, call_friend, audience)
+            fifty, call_friend, audience = lifeline(player, cor_0, fifty, call_friend, audience)
         elif(ans == cor_0) | (ans == cor_1):
-            text = "Correct! You got 1000 php\n"
+            text = "Correct! You got " + str(level_score[score]) + " php\n"
             player.send((bytes(text, "utf8")))
-            return fifty, call_friend, audience
+            time.sleep(2)
+            return fifty, call_friend, audience, score
         else:
-            text = "Incorrect. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(score) +"\n"
+            text = "Incorrect. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(level_score[score - 1]) +"\n"
             player.send((bytes(text, "utf8")))
-            menu()
+            time.sleep(3)
+            score = -1
+            return fifty, call_friend, audience, score
 
 def lifeline(player, cor_0, fifty, call_friend, audience):
+    BUFSIZ = 1024
     choice = ["A", "B", "C", "D"]
     text(player,"Choose lifeline to use:")
     if(fifty):
@@ -106,87 +120,118 @@ def play(player):
     level_14 = ["How big is the Milky Way?\nA. 50000 light years\nB. 80000 light years\nC. 100000 light years\nD. 130000 light years\n", "Alborg Roedslet International Airport is in which Country?\nA. Germany\nB. USA\nC. Canada\nD. Denmark\n", "What was Elvis's last No. 1 in his lifetime?\nA. Suspicious Minds\nB. Hard Headed Woman\nC. Are You Lonesome Tonight?\nD. Surrender\n", "What was the first fairy tale that Walt Disney made a cartoon about?\nA. Jack and The Beanstalk\nB. Little Red Riding Hood\nC. Snow White and The Seven Dwarves\nD. Cinderella\n", "What is the first name of the composer Vivaldi?\nA. Giovanni\nB. Mario\nC. Antonio\nD. Francesco\n", "What is the name of Batman's son?\nA. Richard Grayson\nB. Richard Wayne\nC. Tim Drake\nD. Damian Wayne\n", "In the sport of Judo, what belt color follows an orange belt?\nA. Green\nB. Yellow\nC. Blue\nD. Red\n", "Which country claims the world's tallest building?\nA. Japan\nB. Malaysia\nC. Dubai\nD. China\n", "What is Freddie Mercury's birth name?\nA. Freddie Bulsara\nB. Jel Bulsara\nC. Farrokh Bulsara\nD. Zanzibar Bulsara\n", "What is Triskadekaphobia?\nA. Fear of tripping\nB. Fear of drinking alcohol\nC. Fear of three-legged things\nD. Fear of Number 13"]
     level_15 = ["In 1959, how many countries signed the Antarctic Treaty?\nA. 12\nB. 13\nC. 14\nD. 15\n", "Which year did the Spanish Civil war end?\nA. 1934\nB. 1939\nC. 1944\nD. 1949\n", "What is the diameter of our Earth?\nA. 10 742 km\nB. 11 742 km\nC. 12 742 km\nD. 13 742 km\n", "Which year the Minecraft was released?\nA. 2006\nB. 2007\nC. 2008\nD. 2009\n", "Which year the PS4 was released?\nA. 2013\nB. 2014\nC. 2015\nD. 2016\n", "What year is the EDSA revolution?\nA. 1985\nB. 1986\nC. 1987\nD. 1988\n", "When was the wheel invented?\nA. 2500 BC\nB. 3000 BC\nC. 3500 BC\nD. 4000 BC\n", "When was Microsoft established?\nA. 1960\nB. 1965\nC. 1970\nD. 1975\n", "Which year did the United Nations establish?\nA. 1945\nB. 1946\nC. 1947\nD. 1948\n", "When was Superman created as a fiction character?\nA. 1923\nB. 1933\nC. 1943\nD. 1953\n"]
 
+    clear(player)
     #round 1
     r = random.randint(0,9)
     text(player,"Level 1\nPrize: 1000 php\n" + level_1[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 0)
+    fifty, call_friend, audience, score = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 1)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 2\nPrize: 2000 php\n" + level_2[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 1000)
+    fifty, call_friend, audience,score = get_ans(player, 15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 2)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 3\nPrize: 3000 php\n" + level_3[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 2000)
+    fifty, call_friend, audience,score = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 3)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 4\nPrize: 5000 php\n" + level_4[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 3000)
+    fifty, call_friend, audience, score = get_ans(player, 15, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 4)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 5\nPrize: 10000 php\n" + level_5[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 5000)
+    fifty, call_friend, audience,score = get_ans(player, 15, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 5)
+    if score == -1:
+        return
     clear(player)
 
     #round 2
     r = random.randint(0,9)
     text(player,"Level 6\nPrize: 20000 php\n" + level_6[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 10000)
+    fifty, call_friend, audience,score = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 6)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 7\nPrize: 30000 php\n" + level_7[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 20000)
+    fifty, call_friend, audience,score = get_ans(player, 30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 7)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 8\nPrize: 40000 php\n" + level_8[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 30000)
+    fifty, call_friend, audience,score = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 8)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 9\nPrize: 50000 php\n" + level_9[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 40000)
+    fifty, call_friend, audience,score = get_ans(player, 30, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 9)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 10\nPrize: 100000 php\n" + level_10[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 50000)
+    fifty, call_friend, audience,score = get_ans(player, 30, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 10)
+    if score == -1:
+        return
     clear(player)
 
     #round 3
     r = random.randint(0,9)
     text(player,"Level 11\nPrize: 200000 php\n" + level_11[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 100000)
+    fifty, call_friend, audience,score = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 11)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 12\nPrize: 300000 php\n" + level_12[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 200000)
+    fifty, call_friend, audience,score = get_ans(player, 45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 12)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 13\nPrize: 400000 php\n" + level_13[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 300000)
+    fifty, call_friend, audience,score = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 13)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 14\nPrize: 500000 php\n" + level_14[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 400000)
+    fifty, call_friend, audience,score = get_ans(player, 45, choice[(r + 2) % 4], choice_small[(r + 2) % 4], fifty, call_friend, audience, 14)
+    if score == -1:
+        return
     clear(player)
 
     r = random.randint(0,9)
     text(player,"Level 15\nPrize: 1000000 php\n" + level_15[r] + "E. USE LIFELINE\n")
-    fifty, call_friend, audience = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 500000)
+    fifty, call_friend, audience,score = get_ans(player, 45, choice[r % 4], choice_small[r % 4], fifty, call_friend, audience, 15)
+    if score == -1:
+        return
     clear(player)
 
 def clear(player):
     player.send((bytes("$$clr$$", "utf8")))
-	sleep(0.5)
-
+    time.sleep(0.5)
 def text(player, msg):
     player.send((bytes(msg, "utf8")))
+    time.sleep(1)
