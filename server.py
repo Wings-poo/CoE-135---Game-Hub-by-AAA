@@ -112,7 +112,7 @@ def handle_client(client):  # Takes client socket as argument.
 		if msg in hotel.keys(): # Password exists
 			pw = msg
 
-			if hotel[pw].num == 4: # Room is full
+			if hotel[pw].num == 4 or (hotel[pw].num >= 1 and hotel[pw].game == "C"): # Room is full
 				client.send(bytes("Sadt. Room is full", "utf8"))
 				client.send(bytes("$$quit$$", "utf8"))
 				client.close()
@@ -269,8 +269,6 @@ if __name__ == "__main__":
     ACCEPT_THREAD.start()
     ACCEPT_THREAD.join()
 SERVER.close()
-
-
 # ===================================
 # Code and info gotten from these websites:
 # https://medium.com/swlh/lets-write-a-chat-app-in-python-f6783a9ac170
