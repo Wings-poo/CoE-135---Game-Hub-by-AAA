@@ -6,7 +6,7 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import password
 import dating
-# import bfftest
+import bfftest
 import wwtbm
 
 # ==== The struct of the room ====
@@ -184,7 +184,7 @@ def handle_client(client):  # Takes client socket as argument.
 				if hotel[pw].game == "A":		# Play the dating sim
 					dating.play(hotel[pw], client)
 				elif hotel[pw].game == "B":		# Play the BFF test
-					print("BFF")
+					bfftest.play(hotel[pw], client)
 
 
 				hotel[pw].state = False
@@ -205,7 +205,7 @@ def handle_client(client):  # Takes client socket as argument.
 			if hotel[pw].game == "A":		# Play the dating sim
 				dating.play(hotel[pw], client)
 			elif hotel[pw].game == "B":		# Play the BFF test
-				print("BFF")
+				bfftest.play(hotel[pw], client)
 			else:							# Play the Who wants to be a Millionaire
 				wwtbm.menu(client)
 
