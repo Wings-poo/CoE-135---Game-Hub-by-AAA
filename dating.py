@@ -39,7 +39,7 @@ def day7(room, player):
 	text(player, msg)
 	msg = "\n\nToday, Deredere invited everyone to meet up with him."
 	text(player, msg)
-	msg = "It may be Armageddon but it seems something will happen today."
+	msg = "It may be Armageddon but it seems something more interesting will happen today."
 	text(player, msg)
 	msg = "\n%s: I invited everyone here today and I think you all know why." % BF
 	text(player, msg)
@@ -1891,6 +1891,486 @@ def lib4(room, player):
 	msg = "\nYou entered the library and check out that book."
 	text(player, msg)
 	sleep(3)
+
+
+
+def day5(room, player):
+	init(room)
+
+	msg = "\n\nDay 5: Last Wishes"
+	text(player, msg)
+	msg = "\n\nThe asteroid that is about to hit Earth is now observable."
+	text(player, msg)
+	msg = "It's still a speck in the sky."
+	text(player, msg)
+	msg = "But to think something so small now will bring the end of everything"
+	text(player, msg)
+	msg = "You don't want to dwell on it."
+	text(player, msg)
+	sleep(1)
+	msg = "Three days left until the Armageddon."
+	text(player, msg)
+
+	# Time to choose
+	while True:
+		msg = "\nWhere do you want to go?"
+		msg += "\n1) Home"
+		msg += "\n2) Park"
+		msg += "\n3) School"
+		msg += "\n4) Library"
+		text(player, msg)
+
+		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		ans -= 1
+
+		if (ans < 4 and ans >= 0) and room.taken[ans] == False:
+			room.taken[ans] = True
+			room.place[ans] = player
+
+			if ans is 0:
+				msg = "You chose to stay at home."
+			elif ans is 1:
+				msg = "You chose to go to the park."
+			elif ans is 2:
+				msg = "You chose to go your old school."
+			else:
+				msg = "You chose to go to the library."
+			text(player, msg)
+			room.choice += 1
+			break
+
+		elif (ans < 4 and ans >= 0) and room.taken[ans] == True:
+			msg = "Place is taken."
+			player.send(bytes(msg, "utf8"))
+
+		else:
+			msg = "%d is invalid." %ans
+			player.send(bytes(msg, "utf8"))
+
+
+	# Wait until everyone has made a choice
+	while room.choice < room.num:
+		i = 0				# Do nothing
+
+	sleep(0.5)
+	if room.taken[1] is True:
+		park5(room, player)
+	if room.taken[2] is True:
+		schl5(room, player)
+	if room.taken[3] is True:
+		lib5(room, player)
+	if room.taken[0] is True:
+		home5(room, player)
+
+
+
+def home5(room, player):
+	room.choice = 0
+	name = room.user[room.place[0]]
+
+	clear(player)
+	msg = "You put the popcorn in the microwave and set the timer on."
+	text(player, msg)
+	msg = "You want the last few memories to be watching movies together with Deredere."
+	text(player, msg)
+	sleep(1)
+	msg = "Deredere is helping you set up your living room."
+	text(player, msg)
+	msg = "\n%s: Hey, %s! What movie are we watching?" % (BF, name)
+	text(player, msg)
+
+	# Time to choose
+	if player is room.place[0]:
+		msg = "\n1) Your favorite."
+		msg += "\n2) Choose whatever."
+		text(player, msg)
+
+		ans = int(player.recv(BUFSIZ).decode("utf8"))
+
+		if ans is 1:
+			msg = "\n%s: Get your favorite movie." % name
+			gamecast(room.names, msg)
+			msg = "I'm willing to indulge you."
+			gamecast(room.names, msg)
+			msg = "\n%s: Really!?!" % BF
+			gamecast(room.names, msg)
+			msg = "You're the best, %s!" % name
+			gamecast(room.names, msg)
+			msg = "I'll go put it in."
+			gamecast(room.names, msg)
+			room.score[player] += 7
+
+		elif ans is 2:
+			msg = "\n%s: Go choose whatever you like." % name
+			gamecast(room.names, msg)
+			msg = "As long as it's not the usual."
+			gamecast(room.names, msg)
+			msg = "\n%s: Oh man. I was hoping to pick my favorite!" % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: That's nice and all but no." % name
+			gamecast(room.names, msg)
+			msg = "We watched that way too much that I lost count."
+			gamecast(room.names, msg)
+			msg = "\n%s: It's a good movie though." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Don't push it. Hahaha." % name
+			gamecast(room.names, msg)
+			msg = "\n%s: Well at least I get to pick. Haha." % BF
+			gamecast(room.names, msg)
+			room.score[player] += 5
+
+		else:
+			msg = "\n%s: I'm going to pick if you're not suggesting anything." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Okay." % name
+			gamecast(room.names, msg)
+			room.score[player] += 3
+
+		room.choice = 1
+
+
+	while room.choice == 0:
+		i = 0				# Do nothing
+
+
+	msg = "\nYou watched Deredere set up the movie."
+	text(player, msg)
+	msg = "He's smiling really big."
+	text(player, msg)
+	msg = "His smile is nice. You like it a lot."
+	text(player, msg)
+	msg = "It gives you a fluttering feeling."
+	text(player, msg)
+	sleep(1)
+	msg = "\nYou put the popcorn in a bowl and brought it to the living room."
+	text(player, msg)
+	msg = "You and Deredere chatter while watching the movie."
+	text(player, msg)
+	sleep(1)
+	msg = "\nIt's getting very late and you're on your 3rd movie."
+	text(player, msg)
+	msg = "You feel so comfortable next to Deredere."
+	text(player, msg)
+	msg = "You find your eyelids closing."
+	text(player, msg)
+	msg = "You fell asleep on his shoulder with the movie as your lullaby."
+	text(player, msg)
+	sleep(1)
+
+
+
+def park5(room, player):
+	room.choice = 0
+	name = room.user[room.place[1]]
+
+	clear(player)
+	msg = "You don't know how you found yourself in this situation."
+	text(player, msg)
+	msg = "But hiding from Deredere in the park playing hide-and-seek is..."
+	text(player, msg)
+	msg = "\n%s: Found you!" % BF
+	text(player, msg)
+	msg = "\n%s: AAAAAAAAAAAAAHHHHHHHHHHHHHHH!" % name
+	text(player, msg)
+	msg = "\n%s: HAHA. Did you see your face?" % BF
+	text(player, msg)
+	msg = "That was priceless!"
+	text(player, msg)
+	msg = "\n%s: You almost gave me a heart attack!" % name
+	text(player, msg)
+	msg = "Do you really need to sneak up on me?"
+	text(player, msg)
+	msg = "\n%s: Of course. That's the point of hide-and-seek. Haha." % BF
+	text(player, msg)
+	msg = "So what are we going to do next?"
+	text(player, msg)
+	msg = "\n%s: I'm done hiding. Let's have a chase." % name
+	text(player, msg)
+	msg = "I bet I can catch you."
+	text(player, msg)
+	msg = "\n%s: Ohhh. Confident. I like that." % BF
+	text(player, msg)
+	msg = "What will you bet?"
+	text(player, msg)
+
+	# Time to choose
+	if player is room.place[1]:
+		msg = "\n1) My heart."
+		msg += "\n2) Money."
+		text(player, msg)
+
+		ans = int(player.recv(BUFSIZ).decode("utf8"))
+
+		if ans is 1:
+			msg = "\n%s: My heart." % name
+			gamecast(room.names, msg)
+			msg = "\n%s: Ewww. No thanks." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: How dare you!" % name
+			gamecast(room.names, msg)
+			msg = "Get back here and let me hit you."
+			gamecast(room.names, msg)
+			msg = "\n%s: Haha." % BF
+			gamecast(room.names, msg)
+			room.score[player] += 5
+
+		elif ans is 2:
+			msg = "\n%s: I'll give my money." % name
+			gamecast(room.names, msg)
+			msg = "\n%s: The world's ending though." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Tsk tsk tsk." % name
+			gamecast(room.names, msg)
+			msg = "Obviously not just any money."
+			gamecast(room.names, msg)
+			msg = "I'm talking about my collection."
+			gamecast(room.names, msg)
+			msg = "\n%s: No way. You're betting the limited edition coins?" % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Well? Will you accept?" % name
+			gamecast(room.names, msg)
+			msg = "\n%s: Well if I were you, I'll run now." % BF
+			gamecast(room.names, msg)
+			msg = "I'll make sure you regret betting that."
+			gamecast(room.names, msg)
+			room.score[player] += 3
+
+		else:
+			msg = "\n%s: You're letting me pick then?" % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Sure. Go ahead." % name
+			gamecast(room.names, msg)
+			msg = "\n%s: Well you better run cause you won't like it. Haha." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: ..." % name
+			gamecast(room.names, msg)
+			msg = "\nYou bolted."
+			gamecast(room.names, msg)
+			room.score[player] += 7
+
+		room.choice = 1
+
+
+	while room.choice == 0:
+		i = 0				# Do nothing
+
+
+	msg = "\nYou chase around the park like children."
+	text(player, msg)
+	sleep(1)
+
+
+
+def schl5(room, player):
+	room.choice = 0
+	name = room.user[room.place[2]]
+
+	clear(player)
+	msg = "Ever since the announcement of the world ending, the old school has been open to the public."
+	text(player, msg)
+	sleep(1)
+	msg = "You invited Deredere to eat lunch with you at the rooftop."
+	text(player, msg)
+	msg = "You told him that you'll pack your lunches so he doesn't have to bring anything."
+	text(player, msg)
+	msg = "The breeze on the rooftop is nice."
+	text(player, msg)
+	msg = "\n%s: Did you wait long?" % BF
+	text(player, msg)
+	msg = "\n%s: No." % name
+	text(player, msg)
+	msg = "Nice to see you. Hahaha."
+	text(player, msg)
+	msg = "\n%s: I know you told me not to bring any but I still brought some fruits for dessert." % BF
+	text(player, msg)
+	msg = "\n%s: Wow! That's nice." % name
+	text(player, msg)
+	msg = "\n%s: So what's for lunch?" % BF
+	text(player, msg)
+
+	# Time to choose
+	if player is room.place[2]:
+		msg = "\n1) Carbonara and garlic bread."
+		msg += "\n2) Buttered chicken and baby potatoes."
+		text(player, msg)
+
+		ans = int(player.recv(BUFSIZ).decode("utf8"))
+
+		if ans is 1:
+			msg = "\n%s: It's pasta and garlic bread." % name
+			gamecast(room.names, msg)
+			msg = "Carbonara to be exact. Hahaha."
+			gamecast(room.names, msg)
+			msg = "\n%s: One of your favorites then. Haha." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Yeah. I hope you'll like it." % name
+			gamecast(room.names, msg)
+			msg = "\n%s: Even if it tastes bad, I'll still like it." % BF
+			gamecast(room.names, msg)
+			msg = "Because you made it for me. Haha."
+			gamecast(room.names, msg)
+			msg = "\n%s: Stop with the flirting and let's eat." % name
+			gamecast(room.names, msg)
+			msg = "\n%s: Haha. Okay." % BF
+			gamecast(room.names, msg)
+			room.score[player] += 5
+
+		elif ans is 2:
+			msg = "\n%s: It's buttered chicken and baby potatoes." % name
+			gamecast(room.names, msg)
+			msg = "Just like the lunches at the school cafeteria. Hahaha."
+			gamecast(room.names, msg)
+			msg = "\n%s: But I bet it tastes better than the food served then." % BF
+			gamecast(room.names, msg)
+			msg = "Since you made it. Haha."
+			gamecast(room.names, msg)
+			msg = "\n%s: Sush. You and your pickup lines." % name
+			gamecast(room.names, msg)
+			msg = "Come on. Let's eat. I'm hungry."
+			gamecast(room.names, msg)
+			msg = "\n%s: Sure sure. Thanks for the food." % BF
+			gamecast(room.names, msg)
+			room.score[player] += 7
+
+		else:
+			msg = "\n%s: What? Is it a secret?" % BF
+			gamecast(room.names, msg)
+			msg = "Is this a mystery box?"
+			gamecast(room.names, msg)
+			msg = "Is it poison? Are you killing when the world's ending?"
+			gamecast(room.names, msg)
+			msg = "\n%s: Shut up." % name
+			gamecast(room.names, msg)
+			msg = "You'll find out anyway so why ask?"
+			gamecast(room.names, msg)
+			msg = "\n%s: For presentation. Haha." % BF
+			gamecast(room.names, msg)
+			msg = "Makes it more interesting."
+			gamecast(room.names, msg)
+			msg = "Also, it's your time to flex."
+			gamecast(room.names, msg)
+			msg = "\n%s: Ewww. Just eat your food." % name
+			gamecast(room.names, msg)
+			msg = "\n%s: Okay okay. Haha."
+			gamecast(room.names, msg)
+			room.score[player] += 3
+
+		room.choice = 1
+
+
+	while room.choice == 0:
+		i = 0				# Do nothing
+
+
+	msg = "\nYou enjoyed the sunny weather as you eat."
+	text(player, msg)
+	sleep(1)
+
+
+
+def lib5(room, player):
+	room.choice = 0
+	name = room.user[room.place[3]]
+
+	clear(player)
+	msg = "You went to the library with Deredere."
+	text(player, msg)
+	msg = "He promised he'll read with you."
+	text(player, msg)
+	msg = "Looking at him, he obviously broke his promise."
+	text(player, msg)
+	msg = "If he wanted to sleep, he could have stayed at home."
+	text(player, msg)
+	msg = "He doesn't have to accompany you."
+	text(player, msg)
+	msg = "You look at him and decided what to do."
+	text(player, msg)
+
+	# Time to choose
+	if player is room.place[3]:
+		msg = "\n1) Wake him up gently."
+		msg += "\n2) Smack him."
+		text(player, msg)
+
+		ans = int(player.recv(BUFSIZ).decode("utf8"))
+
+		if ans is 1:
+			msg = "\n%s: Hey, Deredere. Wake up." % name
+			gamecast(room.names, msg)
+			msg = "\n You shook his shoulders gently."
+			gamecast(room.names, msg)
+			msg = "\n%s: Five more minutes please." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Seriously, don't sleep in the library." % name
+			gamecast(room.names, msg)
+			msg = "You promised you'll read with me."
+			gamecast(room.names, msg)
+			msg = "\n%s: Fine. I'll wake up just for you." % BF
+			gamecast(room.names, msg)
+			msg = "See. I'm awake now."
+			gamecast(room.names, msg)
+			msg = "\n%s: Sitting up with your eyes still closed does not count." % name
+			gamecast(room.names, msg)
+			msg = "Fine. I'll let you sleep."
+			gamecast(room.names, msg)
+			msg = "\n%s: Nice. Thanks. You're the best." % BF
+			gamecast(room.names, msg)
+			msg = "\nDeredere went back to sleep."
+			gamecast(room.names, msg)
+			room.score[player] += 5
+
+		elif ans is 2:
+			msg = "\n%s: You're so not sleeping in the library." % name
+			gamecast(room.names, msg)
+			msg = "\nYou smacked Deredere awake."
+			gamecast(room.names, msg)
+			msg = "\n%s: What? What? What?" % BF
+			gamecast(room.names, msg)
+			msg = "Did something happened?"
+			gamecast(room.names, msg)
+			msg = "Did I hit my head? Why does my head hurts?"
+			gamecast(room.names, msg)
+			msg = "\n%s: Can't you sleep somewhere else?" % name
+			gamecast(room.names, msg)
+			msg = "You promised you'll read with me but you're sleeping."
+			gamecast(room.names, msg)
+			msg = "\n%s: I'm sorry." % BF
+			gamecast(room.names, msg)
+			msg = "I just felt so relaxed and I can't help but fall asleep."
+			gamecast(room.names, msg)
+			msg = "Here, I'll read with you."
+			gamecast(room.names, msg)
+			msg = "\nDeredere picked up a random book nearby and attempted to read."
+			gamecast(room.names, msg)
+			msg = "You can see him going back to sleep."
+			gamecast(room.names, msg)
+			msg = "You shook your head and let him be."
+			gamecast(room.names, msg)
+			room.score[player] += 3
+
+		else:
+			msg = "You left him be."
+			gamecast(room.names, msg)
+			msg = "You admire his sleeping face."
+			gamecast(room.names, msg)
+			msg = "You find yourself at awe of his looks."
+			gamecast(room.names, msg)
+			msg = "He looks relaxed."
+			gamecast(room.names, msg)
+			msg = "You wish you could see more of this side of him."
+			gamecast(room.names, msg)
+			room.score[player] += 7
+
+		room.choice = 1
+
+
+	while room.choice == 0:
+		i = 0				# Do nothing
+
+
+	msg = "\nYou went back to reading."
+	text(player, msg)
+	sleep(1)
 
 
 
