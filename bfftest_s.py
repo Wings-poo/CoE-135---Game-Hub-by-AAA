@@ -16,10 +16,12 @@ class sleepover:
         self.state = "notyet"			# If playing or not, what stage the game is in
 
         # Addl variables
+        self.deadz = {}
         self.players = []               # List of players' usernames
         self.idx = {}                   # Dict of username:idx
         for i in range(0,self.pnum):
             self.players.append(self.conntoname[self.conn[i]])
+            self.deadz[self.conn[i]] = False
         for i in range(0,self.pnum):
             self.idx[self.players[i]] = i
         self.scores = [0] * self.pnum
@@ -35,7 +37,7 @@ class sleepover:
 
         self.judging = False
         self.grantedpts = []
-        
+
         self.head = [0]
         self.famsize = [1]
         self.bigfam = 1
@@ -49,6 +51,7 @@ class sleepover:
         self.ans.append("")
         self.head.append(self.pnum)
         self.famsize.append(1)
+        self.deadz[name] = False
         self.pnum = self.pnum + 1
 
     def __len__(self):
@@ -115,19 +118,29 @@ def parse_input(rnum,conn,msg):
             else:
                 singlecast(conn, "Invalid command")
 
-        # default ### just printing, not yet implemented
+        # default
         elif cmd == 'quit' and len(nmsg) == 0:
-            # removeclient(conn)
-            mess = "is quitting"
+            mess = berk[rnum].conntoname[conn] + " is quitting"
             broadcast(rnum,mess)
+            berk[rnum].deadz[conn] = True
+            conn.send(bytes("$$quit$$", "utf8"))
+            conn.close()
+            print("%s:%s has disconnected" % addresses[conn])
         elif cmd == "kick" and len(nmsg) == 1 and (nmsg[0] in berk[rnum].idx):
-            mess = "kick " + nmsg[0]
+            mess = berk[rnum].conntoname[conn] + " has kicked " + nmsg[0]
             broadcast(rnum,mess)
-
+            connkick = ""
+            for i in berk[rnum].conntoname:
+                if berk[rnum].conntoname[i] == nmsg[0]:
+                    connkick = i
+            berk[rnum].deadz[connkick] = True
+            connkick.send(bytes("$$quit$$", "utf8"))
+            connkick.close()
+            print("%s:%s has disconnected" % addresses[connkick])
         else:
             singlecast(conn, "Invalid command")
     else:
-        broadcast(rnum,msg)
+        broadcast(rnum,berk[rnum].conntoname[conn] + ": " + msg)
 
 def getanswer(rnum,timelimit,isext):
     global berk
@@ -167,8 +180,8 @@ def waitforplayers(rnum):
 
     broadcast(rnum,"\nWaiting for players all players to ready... Minimum of 3 players to play...")
     broadcast(rnum,"To ready, type \"$$ready$$\". To unready, \"$$unready$$\"")
-    while ((berk[rnum].readied < berk[rnum].pnum) or (berk[rnum].pnum <= 3)):
-        print(berk[rnum].readied)
+    while ((berk[rnum].readied < berk[rnum].pnum) or (berk[rnum].pnum < 3)):
+        print(berk[rnum].pnum, berk[rnum].readied)
     berk[rnum].readying = False
 
 def printgranted(rnum):
@@ -185,10 +198,9 @@ def printscores(rnum,stage):
         broadcast(rnum,"\nCurrent scores are:")
     if (stage == "end"):
         broadcast(rnum,"\n*drum rolls*\n*drum rolls*\n*drum rolls*\n\nFinal scores are:")
+    print(berk[rnum].pnum,berk[rnum].players)
     for k in range(0,berk[rnum].pnum):
+        print(k)
         broadcast(rnum,berk[rnum].players[k] + ":" + str(berk[rnum].scores[k]))
 
 def printanswers(rnum):
-    broadcast(rnum,"\nHere are the players' answers:")
-    for k in range(0,berk[rnum].pnum):
-        broadcast(rnum,berk[rnum].players[k] + ": " + berk[rnum].ans[k])
