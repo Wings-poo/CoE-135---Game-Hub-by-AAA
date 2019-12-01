@@ -46,7 +46,7 @@ def comp_ans(ansA,ansB):
             newB = ansB[:i] + ansB[i+1] + ansB[i] + ansB[i+2:]
             if (ansA == newB):
                 return True
-        # keyboard mismatch - only one
+        # keyboard mismatch - only one direction?
         # for i in range(0,len(ansB)):  
         #    for j in   
         #    newB = ansB[:i] + ansB[i+1:]
@@ -80,12 +80,20 @@ def bygroup(rnum):
                         if (comp_ans(berk[rnum].ans[i],berk[rnum].ans[k]) or (comp_ans(berk[rnum].ans[i],berk[rnum].players[j]) and comp_ans(berk[rnum].ans[k],berk[rnum].players[j]))):
                             union(i,k,rnum)
 
+        for i in range(0,berk[rnum].pnum):
+            foundone = False
+            for j in range(0,berk[rnum].pnum):
+                if (comp_ans(berk[rnum].ans[i],berk[rnum].players[j])):
+                    foundone = True
+            if (foundone == False and berk[rnum].famsize[find(i,rnum)] == 1):
+                berk[rnum].ans[i] = ""
+
         berk[rnum].grantedpts = []
         for i in range(0,berk[rnum].pnum):
+            if (berk[rnum].ans[i] == ""):
+                continue
             if (berk[rnum].famsize[find(i,rnum)] == berk[rnum].bigfam):
-                for j in range(0,berk[rnum].pnum):
-                    if (comp_ans(berk[rnum].ans[i],berk[rnum].players[j])):
-                        berk[rnum].grantedpts.append(berk[rnum].players[i])
+                berk[rnum].grantedpts.append(berk[rnum].players[i])
 
         printgranted(rnum)
         printscores(rnum,"ingame")
