@@ -3,11 +3,11 @@
 # ===================================
 
 from time import sleep
-from threading import Timer
+import socket
 
 BUFSIZ = 1024
 BF = "Deredere"
-TIMELIMIT = 60 #seconds
+TIMELIMIT = 5 #seconds
 
 # ==== Main ====
 def play(room, player):
@@ -50,7 +50,7 @@ def day7(room, player):
 	msg = "I wish to accept all of your confessions but there's only one I can truly accept."
 	text(player, msg)
 	sleep(2)
-	msg = "%s, I accept your confession." % room.user[winner]
+	msg = "\n%s, I accept your confession." % room.user[winner]
 	text(player, msg)
 
 	msg = "\n\nAnd the world ended with Deredere and %s as lovers." % room.user[winner]
@@ -66,6 +66,7 @@ def day7(room, player):
 
 
 def day1(room, player):
+	player.settimeout(None)
 
 	msg = "\n\nDay 1: Armageddon"
 	text(player, msg)
@@ -140,6 +141,7 @@ def day1(room, player):
 		i = 0				# Do nothing
 
 	sleep(0.5)
+	player.settimeout(TIMELIMIT)
 	if room.taken[0] is True:
 		home1(room, player)
 	if room.taken[1] is True:
@@ -181,7 +183,10 @@ def home1(room, player):
 		msg += "\n2) Badly."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: You could say I'm okay." % name
@@ -269,7 +274,10 @@ def park1(room, player):
 		msg += "\n2) I want to be alone."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Same reason. I want to be somewhere else." % name
@@ -295,7 +303,7 @@ def park1(room, player):
 		i = 0				# Do nothing
 
 
-	msg = "\n%s: It's fine. We have our reasons." % BF
+	msg = "\n%s: I see. It's fine. We have our reasons." % BF
 	text(player, msg)
 	msg = "..."
 	text(player, msg)
@@ -340,7 +348,10 @@ def schl1(room, player):
 		msg += "\n2) Hi."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I'm lost. Can you help me?" % name
@@ -366,6 +377,8 @@ def schl1(room, player):
 			msg = "You're so nice."
 			gamecast(room.names, msg)
 			msg = "\n%s: My mind went blank for a second. Sheesh." % name
+			gamecast(room.names, msg)
+			msg = "Give me a break."
 			gamecast(room.names, msg)
 			room.score[player] += 3
 
@@ -437,14 +450,17 @@ def lib1(room, player):
 		msg += "\n2) Why are you here?"
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I would have made a mistake that I'm in a library." % name
 			gamecast(room.names, msg)
 			msg = "As far as I know, you don't read."
 			gamecast(room.names, msg)
-			msg = "\n%s: D:" % BF
+			msg = "\n%s: Rude!" % BF
 			gamecast(room.names, msg)
 			room.score[player] += 3
 
@@ -460,7 +476,7 @@ def lib1(room, player):
 			gamecast(room.names, msg)
 			msg = "\n%s: ..." % name
 			gamecast(room.names, msg)
-			msg = "\n%s: Stop it. Why are you so mean? D:" % BF
+			msg = "\n%s: Stop it. Why are you so mean?" % BF
 			gamecast(room.names, msg)
 			room.score[player] += 7
 
@@ -493,6 +509,7 @@ def lib1(room, player):
 
 def day2(room, player):
 	init(room)
+	player.settimeout(None)
 
 	msg = "\n\nDay 2: Our Present"
 	text(player, msg)
@@ -543,6 +560,7 @@ def day2(room, player):
 		i = 0				# Do nothing
 
 	sleep(0.5)
+	player.settimeout(TIMELIMIT)
 	if room.taken[0] is True:
 		home2(room, player)
 	if room.taken[1] is True:
@@ -583,14 +601,17 @@ def home2(room, player):
 		msg += "\n2) Talk."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Is your refrigerator running?" % name
 			gamecast(room.names, msg)
 			msg = "\n%s: Yes?" % BF
 			gamecast(room.names, msg)
-			msg = "\n%s: Then you better catch it. HAHAHAHAHA" % name
+			msg = "\n%s: Then you better catch it. HAHAHAHAHA!" % name
 			gamecast(room.names, msg)
 			room.score[player] += 7
 
@@ -619,7 +640,7 @@ def home2(room, player):
 			gamecast(room.names, msg)
 			msg = "%s, you do know I can see who's calling me right?" % name
 			gamecast(room.names, msg)
-			msg = "\n%s: Uhhh... *whispers* Damn it." % name
+			msg = "\n%s: Uhhh... Damn it." % name
 			gamecast(room.names, msg)
 			room.score[player] += 3
 
@@ -668,6 +689,7 @@ def park2(room, player):
 	text(player, msg)
 	msg = "The only reason you jogged before is because Deredere is there to push you."
 	text(player, msg)
+	sleep(1)
 	msg = "\n%s: The world may be ending but it seems miracles continue to happen." % BF
 	text(player, msg)
 	msg = "\nIt seems Deredere is also jogging."
@@ -686,12 +708,15 @@ def park2(room, player):
 		msg += "\n2) I want to die sexy."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Surprisingly, jogging clears my mind." % name
 			gamecast(room.names, msg)
-			msg = "Though it could also be the devil possessing me. Hahaha"
+			msg = "Though it could also be the devil possessing me. Hahaha."
 			gamecast(room.names, msg)
 			room.score[player] += 7
 
@@ -699,6 +724,8 @@ def park2(room, player):
 			msg = "\n%s: I want to die sexy." % name
 			gamecast(room.names, msg)
 			msg = "\n%s: Oh wow. Haha." % BF
+			gamecast(room.names, msg)
+			msg = "\n%s: Hahaha." % name
 			gamecast(room.names, msg)
 			room.score[player] += 5
 
@@ -719,7 +746,7 @@ def park2(room, player):
 		i = 0				# Do nothing
 
 
-	msg = "\n%s: It's nice to see you jog though." % BF
+	msg = "\n%s: It's nice seeing you jog though." % BF
 	text(player, msg)
 	msg = "I've always have to force you to jog with me."
 	text(player, msg)
@@ -729,8 +756,10 @@ def park2(room, player):
 	text(player, msg)
 	msg = "If I'm going to find that someone, might as well be you."
 	text(player, msg)
+	msg = "\n%s: ..." % name
+	text(player, msg)
 	sleep(1)
-	msg = "Come on! Let's have 5 more laps."
+	msg = "\n%s: Come on! Let's have 5 more laps." % BF
 	text(player, msg)
 	msg = "\n%s: WHAT?!?" % name
 	text(player, msg)
@@ -766,7 +795,10 @@ def schl2(room, player):
 		msg += "\n2) Playground."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Let's go to the classrooms." % name
@@ -812,7 +844,7 @@ def schl2(room, player):
 	text(player, msg)
 	msg = "I usually get caught though."
 	text(player, msg)
-	msg = "\n%s: It's because you're bad at being discrete." % name
+	msg = "\n%s: It's because you're bad at being discreet." % name
 	text(player, msg)
 	msg = "Even if I'm at the front and you're at the back, I can tell that you're passing paper."
 	text(player, msg)
@@ -852,7 +884,10 @@ def lib2(room, player):
 		msg += "\n2) You find something interesting?"
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: You look like a child in a candy shop." % name
@@ -916,6 +951,7 @@ def lib2(room, player):
 
 def day3(room, player):
 	init(room)
+	player.settimeout(None)
 
 	msg = "\n\nDay 3: Our Favorite Memory"
 	text(player, msg)
@@ -975,6 +1011,7 @@ def day3(room, player):
 		i = 0				# Do nothing
 
 	sleep(0.5)
+	player.settimeout(TIMELIMIT)
 	if room.taken[1] is True:
 		park3(room, player)
 	if room.taken[2] is True:
@@ -1022,7 +1059,10 @@ def home3(room, player):
 		msg += "\n2) Bring up favorite memory."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Hmmm~ Is you crying for your mom whenever you lost make you nostalgic?" % name
@@ -1033,7 +1073,7 @@ def home3(room, player):
 			gamecast(room.names, msg)
 			msg = "Thank you very much."
 			gamecast(room.names, msg)
-			msg = "\n%s: You're just easy to tease. Hahaha" % name
+			msg = "\n%s: You're just easy to tease. Hahaha." % name
 			gamecast(room.names, msg)
 			room.score[player] += 5
 
@@ -1122,14 +1162,17 @@ def park3(room, player):
 		msg += "\n2) No."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I'll think about it." % name
 			gamecast(room.names, msg)
 			msg = "\n%s: That's not a yes." % BF
 			gamecast(room.names, msg)
-			msg = "\n%s: It's not a no either. Hahaha" % name
+			msg = "\n%s: It's not a no either. Hahaha." % name
 			gamecast(room.names, msg)
 			room.score[player] += 7
 
@@ -1149,7 +1192,7 @@ def park3(room, player):
 			gamecast(room.names, msg)
 			msg = "My want to be healthy is telling yes."
 			gamecast(room.names, msg)
-			msg = "But my lazy bum is screaming no. Hahaha"
+			msg = "But my lazy bum is screaming no. Hahaha."
 			gamecast(room.names, msg)
 			room.score[player] += 5
 
@@ -1213,7 +1256,10 @@ def schl3(room, player):
 		msg += "\n2) Reminisce about the shortcut."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I can't believe you used to have a fanclub back then." % name
@@ -1222,6 +1268,7 @@ def schl3(room, player):
 			gamecast(room.names, msg)
 			msg = "Not only that but I'm really good at soccer. So I have the skills worth fangirling for."
 			gamecast(room.names, msg)
+			sleep(1)
 			msg = "\n%s: Yes. The skills to handle balls. Very admirable indeed." % name
 			gamecast(room.names, msg)
 			msg = "\n%s: Don't reduce my skills to that!" % BF
@@ -1314,7 +1361,10 @@ def lib3(room, player):
 		msg += "\n2) Suggest \"Animal Farm\""
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I suggest the \"Little Prince\"." % name
@@ -1378,6 +1428,7 @@ def lib3(room, player):
 
 def day4(room, player):
 	init(room)
+	player.settimeout(None)
 
 	msg = "\n\nDay 4: Good Morning"
 	text(player, msg)
@@ -1430,6 +1481,7 @@ def day4(room, player):
 		i = 0				# Do nothing
 
 	sleep(0.5)
+	player.settimeout(TIMELIMIT)
 	if room.taken[1] is True:
 		park4(room, player)
 	if room.taken[0] is True:
@@ -1482,7 +1534,10 @@ def home4(room, player):
 		msg += "\n2) Bacon and egg salad with buttered toast."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I'm making fancy pancakes." % name
@@ -1595,7 +1650,10 @@ def park4(room, player):
 		msg += "\n2) No. I forgot my jacket."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I'm just cold so I'll be fine." % name
@@ -1682,7 +1740,7 @@ def park4(room, player):
 	text(player, msg)
 	msg = "You look at the jacket you're now wearing."
 	text(player, msg)
-	msg = "It's is warm and cozy. Just like Deredere."
+	msg = "It's warm and cozy. Just like Deredere."
 	text(player, msg)
 	msg = "It's like he never left."
 	text(player, msg)
@@ -1731,7 +1789,10 @@ def schl4(room, player):
 		msg += "\n2) I'm just waiting for you."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: It takes one to know one." % name
@@ -1745,7 +1806,7 @@ def schl4(room, player):
 			gamecast(room.names, msg)
 			msg = "\n%s: Oh? Who?" % BF
 			gamecast(room.names, msg)
-			msg = "\n%s: You."
+			msg = "\n%s: You." % name
 			gamecast(room.names, msg)
 			sleep(1)
 			msg = "\n%s: Is this really the game we're playing?" % BF
@@ -1833,7 +1894,10 @@ def lib4(room, player):
 		msg += "\n2) Are you telling me something?"
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: That quote fits you a lot." % name
@@ -1886,7 +1950,7 @@ def lib4(room, player):
 	text(player, msg)
 	msg = "\n%s: Thanks for accompanying me." % name
 	text(player, msg)
-	msg = "\n%s: Anything for you. Haha" % BF
+	msg = "\n%s: Anything for you. Haha." % BF
 	text(player, msg)
 	msg = "\nYou entered the library and check out that book."
 	text(player, msg)
@@ -1896,6 +1960,7 @@ def lib4(room, player):
 
 def day5(room, player):
 	init(room)
+	player.settimeout(None)
 
 	msg = "\n\nDay 5: Last Wishes"
 	text(player, msg)
@@ -1903,7 +1968,7 @@ def day5(room, player):
 	text(player, msg)
 	msg = "It's still a speck in the sky."
 	text(player, msg)
-	msg = "But to think something so small now will bring the end of everything"
+	msg = "But to think something so small now will bring the end of everything."
 	text(player, msg)
 	msg = "You don't want to dwell on it."
 	text(player, msg)
@@ -1953,6 +2018,7 @@ def day5(room, player):
 		i = 0				# Do nothing
 
 	sleep(0.5)
+	player.settimeout(TIMELIMIT)
 	if room.taken[1] is True:
 		park5(room, player)
 	if room.taken[2] is True:
@@ -1985,7 +2051,10 @@ def home5(room, player):
 		msg += "\n2) Choose whatever."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Get your favorite movie." % name
@@ -2047,7 +2116,9 @@ def home5(room, player):
 	msg = "You and Deredere chatter while watching the movie."
 	text(player, msg)
 	sleep(1)
-	msg = "\nIt's getting very late and you're on your 3rd movie."
+	msg = "\nTime passes by quickly."
+	text(player, msg)
+	msg = "It's getting very late and you're on your 3rd movie."
 	text(player, msg)
 	msg = "You feel so comfortable next to Deredere."
 	text(player, msg)
@@ -2099,7 +2170,10 @@ def park5(room, player):
 		msg += "\n2) Money."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: My heart." % name
@@ -2194,7 +2268,10 @@ def schl5(room, player):
 		msg += "\n2) Buttered chicken and baby potatoes."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: It's pasta and garlic bread." % name
@@ -2251,7 +2328,7 @@ def schl5(room, player):
 			gamecast(room.names, msg)
 			msg = "\n%s: Ewww. Just eat your food." % name
 			gamecast(room.names, msg)
-			msg = "\n%s: Okay okay. Haha."
+			msg = "\n%s: Okay okay. Haha." % BF
 			gamecast(room.names, msg)
 			room.score[player] += 3
 
@@ -2292,12 +2369,15 @@ def lib5(room, player):
 		msg += "\n2) Smack him."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Hey, Deredere. Wake up." % name
 			gamecast(room.names, msg)
-			msg = "\n You shook his shoulders gently."
+			msg = "\nYou shook his shoulders gently."
 			gamecast(room.names, msg)
 			msg = "\n%s: Five more minutes please." % BF
 			gamecast(room.names, msg)
@@ -2376,6 +2456,7 @@ def lib5(room, player):
 
 def day6(room, player):
 	init(room)
+	player.settimeout(None)
 
 	msg = "\n\nDay 6: Our Confession"
 	text(player, msg)
@@ -2430,6 +2511,7 @@ def day6(room, player):
 		i = 0				# Do nothing
 
 	sleep(0.5)
+	player.settimeout(TIMELIMIT)
 	if room.taken[0] is True:
 		home6(room, player)
 	if room.taken[1] is True:
@@ -2456,7 +2538,7 @@ def home6(room, player):
 	text(player, msg)
 	msg = "You reached his house and opened his mailbox."
 	text(player, msg)
-	msg = "You discretely put the letter inside."
+	msg = "You discreetly put the letter inside."
 	text(player, msg)
 	msg = "\n%s: %s? What are you doing?" % (BF, name)
 	text(player, msg)
@@ -2469,7 +2551,10 @@ def home6(room, player):
 		msg += "\n2) Nothing."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: Ohhh. Ummm..." % name
@@ -2480,8 +2565,10 @@ def home6(room, player):
 			gamecast(room.names, msg)
 			msg = "\n%s: You could just called me if you want to leave a message." % BF
 			gamecast(room.names, msg)
+			sleep(1)
 			msg = "You don't have to go through the trouble of putting it in my mailbox."
 			gamecast(room.names, msg)
+			sleep(1)
 			msg = "\nDeredere approaches you."
 			gamecast(room.names, msg)
 			msg = "\n%s: Ummm! Well, you see, I was just passing by." % name
@@ -2507,6 +2594,7 @@ def home6(room, player):
 			gamecast(room.names, msg)
 			msg = "I haven't receive it yet so I thought I accidentally wrote down you guys' addresses."
 			gamecast(room.names, msg)
+			sleep(1)
 			msg = "So I was just checking. Hahaha."
 			gamecast(room.names, msg)
 			msg = "\n%s: You do know you could just call me, right?" % BF
@@ -2597,7 +2685,7 @@ def park6(room, player):
 	text(player, msg)
 	msg = "Your doubts for using food to confess increases."
 	text(player, msg)
-	msg = "\n%s: %s? What is this?" % BF
+	msg = "\n%s: %s? What is this?" % (BF, name)
 	text(player, msg)
 	msg = "Are you telling me something?"
 	text(player, msg)
@@ -2608,7 +2696,10 @@ def park6(room, player):
 		msg += "\n2) I like you."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I don't have to explain, do I?" % name
@@ -2697,7 +2788,10 @@ def schl6(room, player):
 		msg += "\n2) I want to be with you."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I like you. Please go out with me." % name
@@ -2800,7 +2894,10 @@ def lib6(room, player):
 		msg += "\n2) Suggest to hang out."
 		text(player, msg)
 
-		ans = int(player.recv(BUFSIZ).decode("utf8"))
+		try:
+			ans = int(player.recv(BUFSIZ).decode("utf8"))
+		except socket.timeout:
+			ans = 0
 
 		if ans is 1:
 			msg = "\n%s: I like you, Deredere." % name
@@ -2845,7 +2942,7 @@ def lib6(room, player):
 			room.score[player] += 5
 
 		else:
-			msg = "\nYou confessed under your breath." % name
+			msg = "\nYou confessed under your breath."
 			gamecast(room.names, msg)
 			msg = "\n%s: I'm sorry. I didn't hear you." % BF
 			gamecast(room.names, msg)
@@ -2880,14 +2977,14 @@ def gamecast(players, msg):
 	for sock in players:
 		sock.send(bytes(msg, "utf8"))
 
-		# sleep(1)
+	sleep(1)
 
 
 
 # ==== Send game text ====
 def text(player, msg):
 	player.send(bytes(msg, "utf8"))
-	# sleep(1)
+	sleep(1)
 
 
 
@@ -2913,6 +3010,5 @@ def init(room):
 # ===================================
 # Code and info gotten from these websites:
 # https://stackoverflow.com/questions/7002429/how-can-i-extract-all-values-from-a-dictionary-in-python
-# https://docs.python.org/3/library/threading.html#timer-objects
-# https://stackoverflow.com/questions/53453887/how-to-set-a-time-limit-for-a-game
+# https://kite.com/python/docs/socket.socket.settimeout
 # ===================================
