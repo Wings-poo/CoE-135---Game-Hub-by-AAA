@@ -7,7 +7,7 @@ import socket
 
 BUFSIZ = 1024
 BF = "Deredere"
-TIMELIMIT = 5 #seconds
+TIMELIMIT = 30 #seconds
 
 # ==== Main ====
 def play(room, player):
