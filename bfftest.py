@@ -1,58 +1,76 @@
-import random 
-import threading 
-import time
-from bfftestvar import *
+from bfftest_g import *
+from bfftest_obo import *
+from bfftest_s import *
 
-print(rules)
+def hostrecv(rnum,client):
+    while (berk[rnum].state != "end" and berk[rnum].deadz[client] == False):
+        msg = client.recv(1024).decode("utf8")
+        parse_input(rnum,client,msg)
+    return
 
-def randp():
-    global played
-    randnum = random.randint(0, numplayers - 1)
-    while (played[randnum] == True):
-        randnum = random.randint(0, numplayers - 1)
-    played[randnum] = True
-    return players[randnum]
+def controller(rnum):
+    global berk
+    waitforplayers(rnum)
+    berk[rnum].state = "allready"
 
-def q(): 
-    global questioned
-    randnum = random.randint(0, qnum - 1)
-    while (questioned[randnum] == True):
-        randnum = random.randint(0, qnum-1)
-    questioned[randnum] = True
-    print(questions[randnum])
+    broadcast(rnum,"\nAll ready. Game start!") 
+    printscores(rnum,"start")
 
-def comp_input(ansA,ansB):
-    if (ansA == ansB):
-        return True
-    """ things to include:
-        double chara
-        swapped chara
-        keyboard mismatch
-        missing chara
-    """
-    return False
+    berk[rnum].state = "bygroup"
+    bygroup(rnum)
 
-def donothing():
-    print("idle\n")
+    berk[rnum].state = "obo"
+    onebyone(rnum)
 
-for i in range(0,numplayers):
-    playername = randp()
-    questions = initq(playername)
-    for j in range(0,5):
-        """q()
-        timer = threading.Timer(10.0, a) 
-        timer.start() 
-        time.sleep(5.0) 
+    broadcast(rnum,"Game end")
+
+    printscores(rnum,"end") 
+
+    broadcast(rnum,"\nCongratulations to the highest scorer/s!")
+    broadcast(rnum,"And of course, congratulations to the group who stayed, you have well kept your friendship! Until next time!") 
+
+    time.sleep(5.0)
+    berk[rnum].state = "end"
+    return
+
+def play(room, client):
+    if (room.names[0] == client): # assume host will not leave before game starts...
+        singlecast(client,rules)
+        newroom = sleepover(room.names, room.user)#(room.names, room.user)
+        roomnum[room.password] = len(berk)
+        rnum = roomnum[room.password]
+        clientroom[client] = rnum
+        berk.append(newroom)
         
-        """
-        """ wait for ten seconds after last dude has answered; max of thirty seconds"""
-        q()
-        """send"""
-        #time.sleep(10.0)
-        ansA = input()
-        ansB = input()
-        print(comp_input(ansA,ansB))
-        """recv"""
-        #time.sleep(5.0) 
+        ctrlr_thread = Thread(target = controller,args=(rnum,))
+        host_thread = Thread(target = hostrecv,args=(rnum,client,))
+        host_thread.daemon = True
+        host_thread.start()
+        ctrlr_thread.start()
+        ctrlr_thread.join()
 
-print("Exit\n")   
+    else:
+        while (not (room.password in roomnum)):
+            pass
+        rnum = roomnum[room.password]
+        clientroom[client] = rnum
+        if (not (client in berk[rnum].conntoname)):
+            berk[rnum].addplayer(client,room.user[client])
+
+        broadcast(rnum,"A new player appeared! Please welcome " + berk[rnum].conntoname[client] + "!\n")
+        singlecast(client,rules)
+
+        if (berk[rnum].state == "bygroup"):
+            singlecast(client,"You have entered in the middle of the game. No time to prepare. Good luck deciphering what's happening.")
+            singlecast(client,"\n" + grules)
+        elif (berk[rnum].state == "obo"):
+            singlecast(client,"You have entered in the middle of the game. No time to prepare. Good luck deciphering what's happening.")
+            singlecast(client,"\n" + oborules)
+        elif (berk[rnum].state == "end"):
+            singlecast(client,"\n Too late.")
+
+        while (berk[rnum].state != "end" and berk[rnum].deadz[client] == False):
+            msg = client.recv(1024).decode("utf8")
+            parse_input(rnum,client,msg)
+
+    return

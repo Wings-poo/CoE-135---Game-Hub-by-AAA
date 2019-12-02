@@ -1,44 +1,42 @@
 from bfftest_s import *
 
-def onebyone(players,pnum,scores):
-    broadcast("\n\n" + oborules)
-    printscores(players,pnum,scores,"ingame")
+def randp(players, pnum, played):
+    randnum = random.randint(0, pnum - 1)
+    while (played[randnum] == True):
+        randnum = random.randint(0, pnum - 1)
+    played[randnum] = True
+    return randnum, played
+
+def onebyone(rnum):
+    global berk
+    broadcast(rnum,"\n" + oborules)
+    printscores(rnum,"ingame")
     
-    played = [False] * pnum
+    played = [False] * berk[rnum].pnum
     questioned = [False] * len(initq(""))
-    ans = [""] * pnum
 
-    for i in range(0,pnum):
-        player,played = randp(players, pnum, played)
-        questions = initq(players[player])
-        broadcast("Round " +  str(i + 1) + ". Highlight is: " + players[player] + ".")
+    for i in range(0,berk[rnum].pnum):
+        if (len(played) < berk[rnum].pnum):
+            played.append(False)
+        berk[rnum].player,played = randp(berk[rnum].players, berk[rnum].pnum, played)
+        questions = initq(berk[rnum].players[berk[rnum].player])
+        broadcast(rnum,"\nRound " +  str(i + 1) + ". Highlight is: " + berk[rnum].players[berk[rnum].player] + ".")
 
-        for j in range(0,5):
-            broadcast("\nQuestion " + str(j + 1) + ".")
+        for j in range(0,3):
+            broadcast(rnum,"\nQuestion " + str(j + 1) + ".")
             question,questioned = randq(questions, len(questions), questioned)
-            broadcast(questions[question])
+            broadcast(rnum,questions[question])
             
-            ans = getanswer(pnum,30.0)
-            
-            print("All answers are in. Last 10 seconds to change your answer.")
-
-            ans = getanswer(pnum,10.0)
+            getanswer(rnum,30.0,False)
+            broadcast(rnum,"\nAll answers are in. Last 10 seconds to change your answer.")
+            getanswer(rnum,10.0,True)
                 
-            printanswers(players,pnum,ans)
+            printanswers(rnum)
 
-            grantedpts = []
-            print(players[player] + " please grant scores. Specify if player has an acceptable answer: Y/N")
-            for k in range(0,pnum):
-                if (k == player):
-                    continue
-                else:
-                    print(players[k] + ": " + ans[k])
-                    correct = input()
-                    if (correct.lower() == 'y'):
-                        scores[k] = scores[k] + 1
-                        grantedpts.append(k)
+            broadcast(rnum,"\nNow, 30 seconds to convince " + berk[rnum].players[berk[rnum].player] + " to grant you a point!")
+            grantpts(rnum)
+            
+            printgranted(rnum)
+            printscores(rnum,"ingame")
 
-            printgranted(players,grantedpts,scores)
-            printscores(players,pnum,scores,"ingame")
-
-    return scores
+            time.sleep(5.0)

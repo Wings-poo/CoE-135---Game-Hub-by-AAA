@@ -1,8 +1,16 @@
-rules = "Welcome to The BFF Test. How to play:\n"
+rules = "Welcome to The BFF Test!\n"
+rules += "What is the BFF Test?\n"
+rules += "    1. The BFF Test has two stages: group stage and one-by-one stage. The stages will be explained correspondingly when they start.\n"
+rules += "    2. In each stage, there will be multiple questions. You will all be given 30 seconds to answer.\n" 
+rules += "    3. When all answers are in, or if it's already the time limit, you will all be given an extra 10 seconds to change your answer.\n"
+rules += "    4. Do take note that you are free to change your answer anytime within the time limit, and your last answer will be your final answer.\n" 
+rules += "    5. The different stages will have different point-granting rules which will be explained accordingly when they start.\n"
+rules += "    6. The player with the highest points will win.\n"
+rules += "How to play:\n"
 rules += "    1. Chat with normal text\n"
 rules += "    2. Commands are sent with an opening and closing \'$$\'. The available commands are:\n"
-rules += "       a. ans,<answer> - to give an answer, duh\n"
-rules += "       b. kick,<username> - kick ya friend. byez\n"
+rules += "       a. answer <answer> - to give an answer, duh\n"
+rules += "       b. kick <username> - kick ya friend. byez\n"
 rules += "       c. quit - feel free to walkout beshie\n"
 rules += "    3. Have fun!\n"
 
@@ -124,8 +132,8 @@ gq = [
     "\"Sweet Princess, if through this wicked witch’s trick, a spindle should your finger prick. A ray of hope there still may be in this, the gift I give to thee.\" - Maleficent. Which among your group sleeps the most?",
     "Spicy. Who is the most tolerant to spicy food?",
     "It's the middle of the night, and you're feeling under the weather. Who would you contact first?",
-    "Person who says the cheesiest lines."
-    "Which among your group is the messiest?",
+    "Person who says the cheesiest lines.",
+    "Bang! You have just pulled the trigger, which among you did you kill?",
     "Blah-blah-blah. Who's the most talkative in your group?",
     "Who is most likely to embarass themselves in front of their crush?",
     "Which among your group do you consider the most attractive?",
@@ -133,5 +141,5 @@ gq = [
     "Who is the flirtiest?",
     "We're all talented in one way, or another... But who amongst you do you think is the most talented?",
     "Who is the friendliest?",
-    "What's the name of your group?",
+    "*crash* Someone just pushed you off the stairs, who did it?",
 ]
