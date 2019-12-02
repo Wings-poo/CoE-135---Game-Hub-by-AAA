@@ -73,6 +73,8 @@ def bygroup(rnum):
         # granting of pts
         init_uf(rnum)
         for i in range(0,berk[rnum].pnum):
+            if (berk[rnum].ans[i] == ""):
+                continue
             for j in range(0,berk[rnum].pnum):
                 if (comp_ans(berk[rnum].ans[i],berk[rnum].players[j])):
                     for k in range(0,berk[rnum].pnum):
@@ -82,12 +84,16 @@ def bygroup(rnum):
                             union(i,k,rnum)
 
         for i in range(0,berk[rnum].pnum):
+            if (berk[rnum].ans[i] == ""):
+                continue
             foundone = False
             for j in range(0,berk[rnum].pnum):
                 if (comp_ans(berk[rnum].ans[i],berk[rnum].players[j])):
+                    print("Oh yes",i,berk[rnum].ans[i],berk[rnum].players[j],berk[rnum].bigfam,berk[rnum].famsize[find(i,rnum)])
                     foundone = True
             if (foundone == False and berk[rnum].famsize[find(i,rnum)] == 1):
                 berk[rnum].ans[i] = ""
+                print("Oh no",i)
 
         berk[rnum].grantedpts = []
         for i in range(0,berk[rnum].pnum):
