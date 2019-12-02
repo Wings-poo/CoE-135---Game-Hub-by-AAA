@@ -42,14 +42,16 @@ def comp_ans(ansA,ansB):
                 return True
     elif (len(ansA) == len(ansB)):
         # swapped chara
-        for i in range(0,len(ansB)-2):
+        for i in range(0,len(ansB)-1):
             newB = ansB[:i] + ansB[i+1] + ansB[i] + ansB[i+2:]
             if (ansA == newB):
                 return True
-        # keyboard mismatch - only one direction?
-        # for i in range(0,len(ansB)):  
-        #    for j in   
-        #    newB = ansB[:i] + ansB[i+1:]
+        # keyboard mismatch - only one chara
+        for i in range(0,len(ansB)):  
+            for j in kybrd[ansB[i]]:
+                newB = ansB[:i] + j + ansB[i+1:]
+                if (ansA == newB):
+                    return True
     else:
         return False
     
@@ -59,9 +61,8 @@ def bygroup(rnum):
     
     gquestioned = [0] * len(gq)
     for j in range(0,5):
-        broadcast(rnum,"\nQuestion " + str(j + 1) + ".")
         question,questioned = randq(gq, len(gq), gquestioned)
-        broadcast(rnum,gq[question])
+        broadcast(rnum,"\nQuestion " + str(j + 1) + ". " + gq[question])
 
         getanswer(rnum,30.0,False)
         broadcast(rnum,"\nAll answers are in. Last 10 seconds to change your answer.")
@@ -97,5 +98,8 @@ def bygroup(rnum):
 
         printgranted(rnum)
         printscores(rnum,"ingame")
+
+        if berk[rnum].currpnum == 1:
+            break
 
         time.sleep(5)

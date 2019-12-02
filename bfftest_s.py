@@ -10,15 +10,16 @@ clientroom = {}
 class sleepover:
     def __init__(self, names, usernames):
         # copy variables from Room // makes a new class para lang less gulo?
-        self.conn = names               # List of players' connections (client variable)
-        self.conntoname = usernames     # Dict of conn:username of the players
-        self.pnum = len(self)           # Number of players in room
-        self.state = "notyet"			# If playing or not, what stage the game is in
+        self.conn = names.copy()            # List of players' connections (client variable)
+        self.conntoname = usernames.copy()  # Dict of conn:username of the players
+        self.pnum = len(self)               # Number of players in room
+        self.currpnum = self.pnum
+        self.state = "notyet"	    		# If playing or not, what stage the game is in
 
         # Addl variables
         self.deadz = {}
-        self.players = []               # List of players' usernames
-        self.idx = {}                   # Dict of username:idx
+        self.players = []                   # List of players' usernames
+        self.idx = {}                       # Dict of username:idx
         for i in range(0,self.pnum):
             self.players.append(self.conntoname[self.conn[i]])
             self.deadz[self.conn[i]] = False
@@ -46,13 +47,18 @@ class sleepover:
     def addplayer(self, name, username):
         self.conn.append(name)
         self.conntoname[name] = username
+
+        self.deadz[name] = False
         self.players.append(username)
         self.idx[username] = self.pnum
+
         self.ans.append("")
         self.head.append(self.pnum)
         self.famsize.append(1)
-        self.deadz[name] = False
+        self.scores.append(0)
+
         self.pnum = self.pnum + 1
+        self.currpnum = self.currpnum + 1
 
     def __len__(self):
          return len(self.conntoname)
@@ -65,18 +71,20 @@ def randq(questions, qnum, questioned):
     return randnum, questioned
 
 def broadcast(rnum,msg):
-    msg += '\n'
+    msg = msg + '\n'
     for i in berk[rnum].conn:
-        i.send(msg.encode())
+        if berk[rnum].deadz[i] == False:
+            i.send(msg.encode())
 
 def singlecast(conn,msg): 
-    conn.send(msg.encode())
+    if berk[clientroom[conn]].deadz[conn] == False:
+        conn.send(msg.encode())
 
 def parse_input(rnum,conn,msg):
     global berk
     
-    if msg.startswith('%%') and msg.endswith('%%'):
-        nmsg = msg[len('%%'):len(msg)-len('%%')].split(',')
+    if msg.startswith('$$') and msg.endswith('$$'):
+        nmsg = msg[len('$$'):len(msg)-len('$$')].split(',')
         cmd = nmsg[0]
         nmsg = nmsg[1:]
 
@@ -101,15 +109,15 @@ def parse_input(rnum,conn,msg):
             berk[rnum].ans[berk[rnum].idx[berk[rnum].conntoname[conn]]] = mess
 
         # after game question round
-        elif ((cmd == 'grant') and (len(nmsg) == 1)):
+        elif ((cmd == 'grant') and (len(nmsg) == 1) and (berk[rnum].judging == True)):
             if (berk[rnum].player < 0):
                 singlecast(conn, "Invalid command")
-            elif ((berk[rnum].judging == True) and (nmsg[0] in berk[rnum].idx) and (berk[rnum].conntoname[conn] == berk[rnum].players[berk[rnum].player]) and (nmsg[0] != berk[rnum].players[berk[rnum].player])):
+            elif ((nmsg[0] in berk[rnum].idx) and (berk[rnum].conntoname[conn] == berk[rnum].players[berk[rnum].player]) and (nmsg[0] != berk[rnum].players[berk[rnum].player])):
                 if (berk[rnum].grantedpts.count(nmsg[0]) == 0):
                     berk[rnum].grantedpts.append(nmsg[0])
             else:
                 singlecast(conn, "Invalid command")
-        elif ((cmd == 'ungrant') and (len(nmsg) == 1)):
+        elif ((cmd == 'ungrant') and (len(nmsg) == 1) and (berk[rnum].judging == True)):
             if (berk[rnum].player < 0):
                 singlecast(conn, "Invalid command")
             elif ((berk[rnum].judging == True) and (nmsg[0] in berk[rnum].idx) and (berk[rnum].conntoname[conn] == berk[rnum].players[berk[rnum].player]) and (nmsg[0] != berk[rnum].players[berk[rnum].player])):
@@ -123,22 +131,26 @@ def parse_input(rnum,conn,msg):
             mess = berk[rnum].conntoname[conn] + " is quitting"
             broadcast(rnum,mess)
             berk[rnum].deadz[conn] = True
-            conn.send(bytes("$$quit$$", "utf8"))
-            conn.close()
-            print("%s:%s has disconnected" % addresses[conn])
+            berk[rnum].currpnum = berk[rnum].currpnum - 1
+            if berk[rnum].player >= 0 and conn == berk[rnum].conn[berk[rnum].player]:
+                mess = "Player highlighted gone. Skipping round."
+                broadcast(rnum,mess)
         elif cmd == "kick" and len(nmsg) == 1 and (nmsg[0] in berk[rnum].idx):
-            mess = berk[rnum].conntoname[conn] + " has kicked " + nmsg[0]
-            broadcast(rnum,mess)
-            connkick = ""
-            for i in berk[rnum].conntoname:
-                if berk[rnum].conntoname[i] == nmsg[0]:
-                    connkick = i
-            berk[rnum].deadz[connkick] = True
-            connkick.send(bytes("$$quit$$", "utf8"))
-            connkick.close()
-            print("%s:%s has disconnected" % addresses[connkick])
+            if nmsg[0] == berk[rnum].conntoname[conn]:
+                singlecast(conn, "Invalid command")
+            else:
+                mess = berk[rnum].conntoname[conn] + " has kicked " + nmsg[0]
+                broadcast(rnum,mess)
+                connkick = berk[rnum].conn[berk[rnum].idx[nmsg[0]]]
+                berk[rnum].deadz[connkick] = True
+                berk[rnum].currpnum = berk[rnum].currpnum - 1
+                singlecast(connkick, "Send your last words...")
+                if berk[rnum].player >= 0 and connkick == berk[rnum].conn[berk[rnum].player]:
+                    mess = "Player highlighted gone. Skipping round."
+                    broadcast(rnum,mess)
         else:
             singlecast(conn, "Invalid command")
+
     else:
         broadcast(rnum,berk[rnum].conntoname[conn] + ": " + msg)
 
@@ -151,8 +163,12 @@ def getanswer(rnum,timelimit,isext):
 
     tstart = time.time()
     tend = time.time()
-    while ((tend - tstart < timelimit) and (berk[rnum].answered < berk[rnum].pnum or isext)):
+    while ((tend - tstart < timelimit) and (berk[rnum].answered < berk[rnum].currpnum or isext)):
         tend = time.time()
+        if berk[rnum].player >= 0 and berk[rnum].deadz[berk[rnum].conn[berk[rnum].player]] == True:
+            break
+        if berk[rnum].currpnum == 1:
+            break
     if (tend - tstart > timelimit):
         broadcast(rnum,"Time's up.")
     berk[rnum].answering = False
@@ -169,19 +185,24 @@ def grantpts(rnum):
     tend = time.time()
     while (tend - tstart < 30.0):
         tend = time.time()
+        if berk[rnum].deadz[berk[rnum].conn[berk[rnum].player]] == True:
+            break
+        if berk[rnum].currpnum == 1:
+            break
     if (tend - tstart > 30.0):
         broadcast(rnum,"Time's up.")
-    judging = False
+    berk[rnum].judging = False
 
 def waitforplayers(rnum):
     global berk
     berk[rnum].readying  = True
     berk[rnum].ready = [False] * berk[rnum].pnum
 
-    broadcast(rnum,"\nWaiting for players all players to ready... Minimum of 3 players to play...")
+    broadcast(rnum,"\nWaiting for players all players to ready...")
     broadcast(rnum,"To ready, type \"$$ready$$\". To unready, \"$$unready$$\"")
-    while ((berk[rnum].readied < berk[rnum].pnum) or (berk[rnum].pnum < 3)):
-        print(berk[rnum].pnum, berk[rnum].readied)
+    while (berk[rnum].readied < berk[rnum].currpnum):
+        if berk[rnum].currpnum == 1:
+            break
     berk[rnum].readying = False
 
 def printgranted(rnum):
@@ -198,9 +219,10 @@ def printscores(rnum,stage):
         broadcast(rnum,"\nCurrent scores are:")
     if (stage == "end"):
         broadcast(rnum,"\n*drum rolls*\n*drum rolls*\n*drum rolls*\n\nFinal scores are:")
-    print(berk[rnum].pnum,berk[rnum].players)
     for k in range(0,berk[rnum].pnum):
-        print(k)
         broadcast(rnum,berk[rnum].players[k] + ":" + str(berk[rnum].scores[k]))
 
 def printanswers(rnum):
+    broadcast(rnum,"\nHere are the players' answers:")
+    for k in range(0,berk[rnum].pnum):
+        broadcast(rnum,berk[rnum].players[k] + ": " + berk[rnum].ans[k])

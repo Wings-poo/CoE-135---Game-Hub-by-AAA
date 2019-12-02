@@ -12,15 +12,36 @@ def controller(rnum):
     global berk
     waitforplayers(rnum)
     berk[rnum].state = "allready"
+    if berk[rnum].currpnum == 1:
+        broadcast(rnum,"\nCongratulations you are the last standing player!")
+        printscores(rnum,"end")
+        time.sleep(5.0)
+        berk[rnum].state = "end"
+        time.sleep(5.0)
+        return
 
     broadcast(rnum,"\nAll ready. Game start!") 
     printscores(rnum,"start")
 
     berk[rnum].state = "bygroup"
     bygroup(rnum)
+    if berk[rnum].currpnum == 1:
+        broadcast(rnum,"\nCongratulations you are the last standing player!")
+        printscores(rnum,"end")
+        time.sleep(5.0)
+        berk[rnum].state = "end"
+        time.sleep(5.0)
+        return
 
     berk[rnum].state = "obo"
     onebyone(rnum)
+    if berk[rnum].currpnum == 1:
+        broadcast(rnum,"\nCongratulations you are the last standing player!")
+        printscores(rnum,"end")
+        time.sleep(5.0)
+        berk[rnum].state = "end"
+        time.sleep(5.0)
+        return
 
     broadcast(rnum,"Game end")
 
@@ -31,17 +52,19 @@ def controller(rnum):
 
     time.sleep(5.0)
     berk[rnum].state = "end"
+    time.sleep(5.0)
     return
 
 def play(room, client):
     if (room.names[0] == client): # assume host will not leave before game starts...
-        singlecast(client,rules)
-        newroom = sleepover(room.names, room.user)#(room.names, room.user)
+        newroom = sleepover(room.names, room.user)
         roomnum[room.password] = len(berk)
         rnum = roomnum[room.password]
         clientroom[client] = rnum
         berk.append(newroom)
         
+        singlecast(client,rules)
+
         ctrlr_thread = Thread(target = controller,args=(rnum,))
         host_thread = Thread(target = hostrecv,args=(rnum,client,))
         host_thread.daemon = True
