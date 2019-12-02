@@ -83,8 +83,8 @@ def singlecast(conn,msg):
 def parse_input(rnum,conn,msg):
     global berk
     
-    if msg.startswith('%%') and msg.endswith('%%'): ###$$
-        nmsg = msg[len('%%'):len(msg)-len('%%')].split(',')
+    if msg.startswith('$$') and msg.endswith('$$'):
+        nmsg = msg[len('$$'):len(msg)-len('$$')].split(',')
         cmd = nmsg[0]
         nmsg = nmsg[1:]
 
