@@ -151,11 +151,11 @@ def handle_client(client):  # Takes client socket as argument.
 			msg = msg.decode("utf8").upper()
 			if (msg >= "A" and msg <= "B"):
 				hotel[pw] = Room(client, name, msg, pw)
-				client.send(bytes("Waiting for other players...", "utf8"))
+				client.send(bytes("Type '$$game$$' to start.\nWaiting for other players...", "utf8"))
 				break
 			elif (msg == "C"):
 				hotel[pw] = Room(client, name, msg, pw)
-				client.send(bytes("Type $$game$$ to start", "utf8"))
+				client.send(bytes("Type '$$game$$' to start", "utf8"))
 				break
 
 
