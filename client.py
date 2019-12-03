@@ -49,9 +49,9 @@ def send():		# event is passed by binders.
 
 
 # ==== Main function ====
-# HOST = input('Server IP: ')
+HOST = input('Server IP: ')
 # PORT = int(input('Port number: '))
-HOST = "127.0.0.1"
+# HOST = "127.0.0.1"
 PORT = 6969
 BUFSIZ = 1024
 

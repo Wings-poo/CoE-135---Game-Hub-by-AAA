@@ -252,9 +252,9 @@ clients = {}						# Clients and their current username
 addresses = {}
 hotel = {}							# Lists of rooms (key is password)
 
-# HOST = input('Server IP: ')
+HOST = input('Server IP: ')
 # PORT = int(input('Port number: '))
-HOST = "127.0.0.1"
+# HOST = "127.0.0.1"
 PORT = 6969
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
