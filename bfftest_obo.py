@@ -21,6 +21,8 @@ def onebyone(rnum):
         berk[rnum].player,played = randp(berk[rnum].players, berk[rnum].pnum, played)
         questions = initq(berk[rnum].players[berk[rnum].player])
         broadcast(rnum,"\nRound " +  str(i + 1) + ". Highlight is: " + berk[rnum].players[berk[rnum].player] + ".")
+        if berk[rnum].deadz[berk[rnum].conn[berk[rnum].player]] == True:
+            continue
 
         for j in range(0,3):
             question,questioned = randq(questions, len(questions), questioned)

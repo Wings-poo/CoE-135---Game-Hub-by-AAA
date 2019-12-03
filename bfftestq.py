@@ -1,16 +1,16 @@
 rules = "Welcome to The BFF Test!\n"
 rules += "What is the BFF Test?\n"
-rules += "    1. The BFF Test has two stages: group stage and one-by-one stage. The stages will be explained correspondingly when they start.\n"
+rules += "    1. The BFF Test has two stages: group stage and solo stage. The stages will be explained correspondingly when they start.\n"
 rules += "    2. In each stage, there will be multiple questions. You will all be given 30 seconds to answer.\n" 
-rules += "    3. When all answers are in, or if it's already the time limit, you will all be given an extra 10 seconds to change your answer.\n"
-rules += "    4. Do take note that you are free to change your answer anytime within the time limit, and your last answer will be your final answer.\n" 
+rules += "    3. When all answers are in, or it's already time limit, you\'ll all be given an extra 10 seconds to change your answer.\n"
+rules += "    4. You are free to change your answer anytime within the time limit, and your last answer will be your final answer.\n" 
 rules += "    5. The different stages will have different point-granting rules which will be explained accordingly when they start.\n"
 rules += "    6. The player with the highest points will win.\n"
 rules += "How to play:\n"
 rules += "    1. Chat with normal text\n"
 rules += "    2. Commands are sent with an opening and closing \'$$\'. The available commands are:\n"
-rules += "       a. answer <answer> - to give an answer, duh\n"
-rules += "       b. kick <username> - kick ya friend. byez\n"
+rules += "       a. ans,<answer> - to give an answer, duh\n"
+rules += "       b. kick,<username> - kick ya friend. byez. ya can't kick yaself tho\n"
 rules += "       c. quit - feel free to walkout beshie\n"
 rules += "    3. Have fun!\n"
 
@@ -29,7 +29,7 @@ oborules += "Good luck~\n"
 
 def initq(pname):
     return [
-        # Basic Info: 7
+        # Basic Info: 10
         "How old is " + pname + "?",
         "What is the middle initial of " + pname,
         "Number of siblings of " + pname + ".",
@@ -37,6 +37,9 @@ def initq(pname):
         "When was " + pname + " born?",
         "In what order was " + pname + " born among their siblings?",
         "Where is the province of " + pname + "?",
+        "Some useful info. What is the zodiac sign of " + pname + "?",
+        "MBTI personality type of " + pname + ".",
+        pname + "\'s footsize.",
 
         # OR questions: 10
         "Does " + pname + " prefer calling or texting?",
@@ -47,18 +50,15 @@ def initq(pname):
         "What does " + pname + " prefer? Social sciences or Natural sciences?",
         "Orange or Blue?",
         "Does " + pname + " prefer manga, anime, or live action?",
-        "If the boat you're riding is sinking, who will " + pname + " choose to save?",
         "Can you trust " + pname + " with your secret/s?",
+        "If " + pname + " had to choose between: earrings, bracelet, ring, hairclip, makeup. What would they choose?",
 
-        # Favorites/Likes/Dislikes: 20
+        # Favorites/Likes/Dislikes: 17
         "What is " + pname + "\'s favorite animal?",
-        "What is the favorite cuisine of " + pname + "?",
-        "Favorite color of " + pname + ".",
+        "Yummy! What is the favorite cuisine of " + pname + "?",
         "What is " + pname + "\'s favorite game?",
         "What is the favorite music genre of " + pname + "?",
         "Favorite Disney movie of " + pname + ".",
-        "Who is " + pname + "\'s favorite Kpop artist/group?",
-        "Who is the favorite vocaloid/vocaloid producer of " + pname + "?",
         "Favorite programming language of " + pname + ".",
         "Who is " + pname + "\'s favorite singer/band/idol?",
         "What’s a sound that " + pname + " hates?",
@@ -75,17 +75,17 @@ def initq(pname):
         # UP rele: 18
         "How many UP Diliman orgs does " + pname + " have?",
         "How many orgs (not restricted to UPD) does " + pname + " have?",
-        "How many MST subjects has " + pname + " taken?",
-        "How many SSP subjects has " + pname + " taken?",
+        "What is " + pname + "\'s current GWA? (estimate)",
+        "If " + pname + " has taken a picture with oble, will they be delayed/advanced/no effect?",
         "How many AH subjects has " + pname + " taken?",
         "How many GEs has " + pname + " taken?",
         "How many PEs has " + pname + " taken?",
         "What is " + pname + "\'s favorite major subject?",
-        "What is " + pname + "\'s favorite GE subject?",
-        "What is " + pname + "\'s favorite PE subject?",
+        pname + "\'s favorite GE subject.",
+        "What is the one PE subject that " + pname + " has always wanted to take or has taken and loved?",
         "Where is " + pname + "\'s favorite spot in UP Diliman?",
         "How long has " + pname + " been in UP Diliman?",
-        "What is the student number of " + pname + "?",
+        "Student number of " + pname + ".",
         "What is the degree/course of " + pname + "?",
         "Within UP Diliman area, where does " + pname + " usually eat out?",
         "What is " + pname + "\'s favorite pancit canton flavor?",
@@ -95,10 +95,9 @@ def initq(pname):
         # Random: 25
         "What is the first thing " + pname + " will do if they win one million dollars?",
         "What is the first thing " + pname + " would buy if they win one million dollars?",
-        "What accessory does " + pname + " usually wear?",
         "Name of " + pname + "\'s blog.",
         "What is the biggest \"what if \" of " + pname + "?",
-        "Name something that will make " + pname + " to leave the house on a holiday.",
+        "Something that will make " + pname + " leave the house on a holiday.",
         "How can you best describe " + pname + "?",
         "Where was " + pname + " 3 hours ago?",
         "Name at least one hobby of " + pname + ". (For " + pname + " list down all you can think of).",
@@ -117,7 +116,8 @@ def initq(pname):
         "What is " + pname + "\'s dream job?",
         "Dream destination of " + pname + ".",
         "What sports is " + pname + " most confident at?",
-        "What is one thing that " + pname + " draws the most?"
+        "What is one thing that " + pname + " draws the most?",
+        "If the boat you're riding is sinking, who will " + pname + " choose to save?"
     ]
 
 gq = [
@@ -136,12 +136,12 @@ gq = [
     "Bang! You have just pulled the trigger, which among you did you kill?",
     "Blah-blah-blah. Who's the most talkative in your group?",
     "Who is most likely to embarass themselves in front of their crush?",
-    "Which among your group do you consider the most attractive?",
+    "Which among your group do you consider the least attractive?",
     "Who eats the most? Om nom nom",
     "Who is the flirtiest?",
     "We're all talented in one way, or another... But who amongst you do you think is the most talented?",
-    "Who is the friendliest?",
-    "*crash* Someone just pushed you off the stairs, who did it?",
+    "Who is the unfriendliest?",
+    "*crash* Someone just pushed you off the stairs, who did it?"
 ]
 
 kybrd = {

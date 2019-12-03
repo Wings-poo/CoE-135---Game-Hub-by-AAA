@@ -17,7 +17,6 @@ def controller(rnum):
         printscores(rnum,"end")
         time.sleep(5.0)
         berk[rnum].state = "end"
-        time.sleep(5.0)
         return
 
     broadcast(rnum,"\nAll ready. Game start!") 
@@ -30,7 +29,6 @@ def controller(rnum):
         printscores(rnum,"end")
         time.sleep(5.0)
         berk[rnum].state = "end"
-        time.sleep(5.0)
         return
 
     berk[rnum].state = "obo"
@@ -40,7 +38,6 @@ def controller(rnum):
         printscores(rnum,"end")
         time.sleep(5.0)
         berk[rnum].state = "end"
-        time.sleep(5.0)
         return
 
     broadcast(rnum,"Game end")
@@ -52,7 +49,6 @@ def controller(rnum):
 
     time.sleep(5.0)
     berk[rnum].state = "end"
-    time.sleep(5.0)
     return
 
 def play(room, client):
@@ -71,6 +67,7 @@ def play(room, client):
         host_thread.start()
         ctrlr_thread.start()
         ctrlr_thread.join()
+        host_thread.join()
 
     else:
         while (not (room.password in roomnum)):
