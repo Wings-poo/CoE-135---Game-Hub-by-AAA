@@ -37,7 +37,7 @@ def get_ans(player, delay, cor_0, cor_1, fifty, call_friend, audience, score):
         b = time.time()
         c = int(b - a)
         if c > delay:
-            text = "Time's up. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(level_score[score - 1]) +"\n"
+            text = "Time's up. Correct answer is " +  cor_0 + "\nGame over! Your total score is " + str(level_score[score - 1]) +"\n"
             player.send((bytes(text, "utf8")))
             time.sleep(3)
             score = -1
@@ -50,7 +50,7 @@ def get_ans(player, delay, cor_0, cor_1, fifty, call_friend, audience, score):
             time.sleep(2)
             return fifty, call_friend, audience, score
         else:
-            text = "Incorrect. Correct answer is" +  cor_0 + "\nGame over! Your total score is " + str(level_score[score - 1]) +"\n"
+            text = "Incorrect. Correct answer is " +  cor_0 + "\nGame over! Your total score is " + str(level_score[score - 1]) +"\n"
             player.send((bytes(text, "utf8")))
             time.sleep(3)
             score = -1

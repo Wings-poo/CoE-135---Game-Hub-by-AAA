@@ -2673,11 +2673,11 @@ def park6(room, player):
 	text(player, msg)
 	msg = "\n%s: You're spacing out. Are you okay?" % BF
 	text(player, msg)
-	msg = "\n%s: Oh yeah. I'm fine."
+	msg = "\n%s: Oh yeah. I'm fine." % name
 	text(player, msg)
 	msg = "Just thinking. That's all."
 	text(player, msg)
-	msg = "\n%s: If you say so."
+	msg = "\n%s: If you say so." % BF
 	text(player, msg)
 	msg = "\nYou returned to eating your food."
 	text(player, msg)
