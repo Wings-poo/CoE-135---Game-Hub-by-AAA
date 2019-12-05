@@ -2821,7 +2821,7 @@ def schl6(room, player):
 			room.score[player] += 5
 
 		elif ans is 2:
-			msg = "\n%s: I want to be you." % name
+			msg = "\n%s: I want to be with you." % name
 			gamecast(room.names, msg)
 			msg = "Whether the world is ending or not,"
 			gamecast(room.names, msg)
