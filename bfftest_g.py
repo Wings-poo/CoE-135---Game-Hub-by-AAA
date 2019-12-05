@@ -47,11 +47,12 @@ def comp_ans(ansA,ansB):
             if (ansA == newB):
                 return True
         # keyboard mismatch - only one chara
-        for i in range(0,len(ansB)):  
-            for j in kybrd[ansB[i]]:
-                newB = ansB[:i] + j + ansB[i+1:]
-                if (ansA == newB):
-                    return True
+        for i in range(0,len(ansB)): 
+            if ansB[i] in kybrd:
+                for j in kybrd[ansB[i]]:
+                    newB = ansB[:i] + j + ansB[i+1:]
+                    if (ansA == newB):
+                        return True
     else:
         return False
     
