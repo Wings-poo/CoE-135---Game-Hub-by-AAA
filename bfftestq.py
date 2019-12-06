@@ -1,9 +1,9 @@
 rules = "Welcome to The BFF Test!\n"
 rules += "What is the BFF Test?\n"
 rules += "    1. The BFF Test has two stages: group stage and solo stage. The stages will be explained correspondingly when they start.\n"
-rules += "    2. In each stage, there will be multiple questions. You will all be given 30 seconds to answer.\n"
+rules += "    2. In each stage, there will be multiple questions. You will all be given 30 seconds to answer.\n" 
 rules += "    3. When all answers are in, or it's already time limit, you\'ll all be given an extra 10 seconds to change your answer.\n"
-rules += "    4. You are free to change your answer anytime within the time limit, and your last answer will be your final answer.\n"
+rules += "    4. You are free to change your answer anytime within the time limit, and your last answer will be your final answer.\n" 
 rules += "    5. The different stages will have different point-granting rules which will be explained accordingly when they start.\n"
 rules += "    6. The player with the highest points will win.\n"
 rules += "How to play:\n"
@@ -71,7 +71,7 @@ def initq(pname):
         "Most used emoji of " + pname + ".",
         "Name one thing that " + pname + " collects. (For " + pname + " list down all you can think of).",
         "Most used mobile app of " + pname + " aside from social media apps.",
-
+        
         # UP rele: 18
         "How many UP Diliman orgs does " + pname + " have?",
         "How many orgs (not restricted to UPD) does " + pname + " have?",
@@ -123,10 +123,10 @@ def initq(pname):
 gq = [
     # Sa inyong lahat: 20
     "Amongst you, who is most likely to sleep past 11 AM? (yes, AM)",
-    "Which among your group is the laziest?",
+    "Which among your group is the laziest?", 
     "Mirror, mirror, on the wall, who's the sketchiest of them all?",
     "Who is the mother figure of the group?",
-    "\"Anime\". Which among your group do you think of when you hear this word?",
+    "\"Anime\". Which among your group do you think of when you hear this word?", 
     "Which among your group is the most addicted to Kpop?",
     "There's a sale on anything and everything! Which among you would impulsively buy the most number of items?",
     "\"Sweet Princess, if through this wicked witch’s trick, a spindle should your finger prick. A ray of hope there still may be in this, the gift I give to thee.\" - Maleficent. Which among your group sleeps the most?",
@@ -145,17 +145,44 @@ gq = [
 ]
 
 kybrd = {
-    'q' : ['w','a'],
-    'w' : ['e','s','q'],
-    'e' : ['r','d','w'],
-    'r' : ['t','f','e'],
-    't' : ['y','g','r'],
-    'y' : ['u','h','t'],
-    'u' : ['i','j','y'],
-    'i' : ['o','k','u'],
-    'o' : ['p','l','i',],
-    'p' : ['[',';','o'],
-    '[' : [']','\'','p'],
+    '`' : ['~','1','q'],
+    '1' : ['!','2','w','`'],
+    '2' : ['@','3','e','1'],
+    '3' : ['#','4','r','2'],
+    '4' : ['$','5','t','3'],
+    '5' : ['%','6','y','4'],
+    '6' : ['^','7','u','5'],
+    '7' : ['&','8','i','6'],
+    '8' : ['*','9','o','7'],
+    '9' : ['(','0','p','8'],
+    '0' : [')','-','[','9'],
+    '-' : ['_','=',']','0'],
+
+    '~' : ['!','1','q'],
+    '!' : ['@','2','w','`','~'],
+    '@' : ['#','3','e','1','!'],
+    '#' : ['$','4','r','2','@'],
+    '$' : ['%','5','t','3','#'],
+    '%' : ['^','6','y','4','$'],
+    '^' : ['&','7','u','5','%'],
+    '&' : ['*','8','i','6','^'],
+    '*' : ['(','9','o','7','&'],
+    '(' : [')','0','p','8','*'],
+    ')' : ['_','-','[','9','('],
+    '_' : ['+','=',']','0',')'],
+
+    'q' : ['w','`','a','~'],
+    'w' : ['e','1','s','q','!'],
+    'e' : ['r','2','d','w','@'],
+    'r' : ['t','3','f','e','#'],
+    't' : ['y','4','g','r','$'],
+    'y' : ['u','5','h','t','%'],
+    'u' : ['i','6','j','y','^'],
+    'i' : ['o','7','k','u','&'],
+    'o' : ['p','8','l','i','*'],
+    'p' : ['[','9',';','o','('],
+    '[' : [']','0','\'','p',')'],
+
     'a' : ['s','q','z'],
     's' : ['d','w','x','a'],
     'd' : ['f','e','c','s'],
@@ -166,6 +193,7 @@ kybrd = {
     'k' : ['l','i',',','j'],
     'l' : [';','o','.','k'],
     ';' : ['\'','p','/','l'],
+
     'z' : ['x','a'],
     'x' : ['c','s','z'],
     'c' : ['v','d','x'],
@@ -174,15 +202,6 @@ kybrd = {
     'n' : ['m','h','b'],
     'm' : [',','j','n'],
     ',' : ['.','k','m'],
-    '.' : ['/','l',','],
-	'1' : ['2','q'],
-	'2' : ['3','w','1'],
-	'3' : ['4','e','2'],
-	'4' : ['5','r','3'],
-	'5' : ['6','t','4'],
-	'6' : ['7','y','5'],
-	'7' : ['8','u','6'],
-	'8' : ['9','i','7'],
-	'9' : ['0','o','8'],
-	'0' : ['-','p','9']
+    '.' : ['/','l',',']
+    
 }
